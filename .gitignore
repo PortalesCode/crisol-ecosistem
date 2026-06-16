@@ -1,0 +1,10 @@
+# Crisol-Eco — agregá esto a tu .gitignore
+#
+# Si tu proyecto ya tiene .gitignore, agregá las siguientes líneas.
+# Si NO tiene .gitignore, crealo con este contenido.
+#
+# Esto evita que la configuración del ecosistema se trackee en tu repo.
+# El ecosistema se despliega en opencode/ (y se renombra a .opencode/).
+
+.opencode/
+opencode/
