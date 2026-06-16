@@ -1,4 +1,4 @@
-# STATUS
+# STATUS — Crisol-Eco
 
 ## Estado General
 
@@ -6,7 +6,7 @@
 🔴 Sin definir     🟡 En desarrollo     🟢 Estable
 ```
 
-**Estado actual:** 🟡 En Fundación
+**Estado actual:** 🟡 En desarrollo activo
 
 ---
 
@@ -15,16 +15,15 @@
 | Campo | Detalle |
 |---|---|
 | **Fecha** | 2026-06-16 |
-| **Qué pasó** | Fundación del proyecto. Setup de Crisol-Eco, git init, creación de workspec/ y skill-installer. |
-| **Decisiones** | Skill library como repo aparte bajo demanda. Workspec como estructura de trabajo. |
+| **Qué pasó** | Refactor profundo: _plan-utils.ts compartido, plugins refactorizados (plan-read, plan-sync, plan-archive, task-init, task-closeout), econative-status creado, pipeline de plan.md completo. Profesionalización del ecosistema. Limpieza de legacy (commands/, README inflado, AGENTS.md desincronizado). PROJECT.md actualizado con identidad real. |
+| **Decisiones** | _plan-utils.ts como helper central (si cambia formato de plan.md, solo se toca un archivo). Comandos legacy eliminados (las tools los reemplazan). AGENTS.md como fuente de verdad única. README minimal. |
 
 ---
 
 ## Próximos Pasos
 
-- [ ] Definir propósito del proyecto
-- [ ] Poblar skill-library con skills
-- [ ] Primer milestone
+- [ ] Poblar skill-library/ con skills desde máquina Windows y pushear a github.com/PortalesCode/skill-library
+- [ ] Usar el ecosistema para proyectos reales
 
 ---
 
@@ -38,4 +37,4 @@
 
 ## Notas
 
-> Este archivo se actualiza al cerrar cada sesión o tarea significativa.
+> Las skills instaladas via skill-installer no están disponibles hasta reiniciar OpenCode. Esto es por diseño (OpenCode escanea skills al inicio de sesión).

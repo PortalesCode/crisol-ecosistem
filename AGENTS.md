@@ -82,6 +82,10 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 |---|---|
 | `econative_start_session` | **Obligatorio** al inicio. Carga contexto (desde `workspec/context/` en la raíz), memorias, stack, preferences |
 | `econative_context_read` | Lee los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) desde `workspec/context/` en la raíz. Sin límite de tamaño. Útil para consultar contexto sin depender de start_session |
+| `econative_plan_read` | Consulta el plan activo desde `workspec/plans/active/plan.md` — intención, fases, tareas, progreso |
+| `econative_plan_sync` | Sincroniza todowrite ↔ plan.md: `to-todo` carga el plan, `to-plan` persiste cambios |
+| `econative_plan_archive` | Archiva plan completado a `workspec/plans/old/` con timestamp y crea nuevo plan.md vacío |
+| `econative_status` | Vista unificada del proyecto: contexto + plan + stack + descubrimientos en un solo reporte |
 | `econative_save_preferences` | Guarda nombre e idioma del usuario en Memoria/preferences-user/ |
 | `econative_stack_snapshot` | Escanea stack, escribe current.json y archiva snapshots viejos |
 | `econative_remember_it` | Guarda descubrimiento en Memoria/discoveries/ con título, descripción, contenido, tags, importancia y estado |
@@ -91,14 +95,6 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 | `econative_task_closeout` | Marca tarea como completada en el log |
 | `econative_domain_list` | Escanea .opencode/domains/ y devuelve lista de dominios con título y descripción |
 | `econative_domain_reader` | Lee contenido completo de un dominio |
-
-## Comandos disponibles
-
-| Comando | Qué hace |
-|---|---|
-| `scan-stack` | Toma un snapshot del stack del proyecto |
-| `remember-it` | Guarda un descubrimiento en la memoria compartida (con args podés forzar un guardado específico del momento) |
-| `remember-list` | Lista descubrimientos (solo metadata) |
 
 ## Dominios disponibles
 

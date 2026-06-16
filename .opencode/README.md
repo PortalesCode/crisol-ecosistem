@@ -38,6 +38,10 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 |---|---|
 | `econative_start_session` | Inicio obligatorio — carga contexto, memorias, preferences |
 | `econative_context_read` | Lee los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) desde `workspec/context/` en la raíz, sin límite de tamaño |
+| `econative_plan_read` | Consulta el plan activo — intención, fases, tareas, progreso |
+| `econative_plan_sync` | Sincroniza todowrite ↔ plan.md |
+| `econative_plan_archive` | Archiva plan completado a old/ y crea nuevo |
+| `econative_status` | Vista unificada: contexto + plan + stack + descubrimientos |
 | `econative_save_preferences` | Guarda nombre e idioma del usuario |
 | `econative_stack_snapshot` | Toma snapshot del stack y archiva versiones anteriores |
 | `econative_remember_it` | Guarda recuerdo compartido con fecha e importancia |
@@ -67,7 +71,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   │   ├── north/           ← Skills para North
 │   │   └── executor/        ← Skills para Executor
 │   └── extern/              ← Skills de terceros + custom del proyecto (según necesidad)
-├── plugins/                 ← 11 tools como plugins .ts
+├── plugins/                 ← 16 tools como plugins .ts
 ├── domains/                 ← Dominios markdown planos (incluye _template.md como referencia de formato)
 ├── Memoria/
 │   ├── preferences-user/    ← Nombre, idioma del usuario
@@ -75,10 +79,6 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   │   └── snapshots-old/
 │   ├── discoveries/         ← North escribe automático
 │   └── task-log/            ← Log de tareas activas/completadas
-├── commands/
-│   ├── scan-stack.md          ← Snapshot del stack
-│   ├── remember-it.md         ← Guardar descubrimiento
-│   └── remember-list.md       ← Listar descubrimientos
 └── package.json
 
 workspec/                     ← Plan de trabajo y contexto del proyecto (en raíz)
