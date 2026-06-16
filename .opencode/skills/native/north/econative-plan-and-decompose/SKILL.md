@@ -1,15 +1,31 @@
 ---
 name: econative-plan-and-decompose
-description: Usá esta skill cuando necesites transformar una intención en un plan estructurado con fases, tareas y dependencias. North la usa como metodología de planificación.
+description: Transforma una intención en un plan estructurado con fases, tareas y dependencias. Integra el pipeline de workspace/plans/ con persistencia, sync a todowrite y archivado histórico.
 ---
 
 # Plan and Decompose
 
 ## Cuándo usarla
 
-North recibe una intención del usuario y necesita descomponerla en tareas ejecutables.
+- North recibe una intención del usuario y necesita estructurarla
+- Al inicio de sesión para cargar el plan activo desde `workspec/plans/active/plan.md`
+- Al cerrar una fase o plan completo para archivarlo
 
-## Pipeline
+---
+
+## Pipeline completo
+
+### Fase 0: Inicio de sesión — Cargar plan activo
+
+```
+1. Leer workspec/plans/active/plan.md
+2. ¿Hay un plan con fases/tareas?
+   ├── Sí → Plasmar en todowrite (reflejo en vivo)
+   │        "Acá retomamos: [intención], fase [X], tareas pendientes: [lista]"
+   └── No → Esperar intención del usuario (Fase 1)
+```
+
+### Fase 1: Descomposición (existente)
 
 ```
 Intención (una frase)
@@ -25,42 +41,79 @@ Dependencias — qué necesita qué
 Orden — secuencia vs paralelo
 ```
 
-## Formato del plan
+### Fase 2: Escribir plan persistente
+
+```
+1. Escribir plan.md en workspec/plans/active/plan.md
+2. Plasmar en todowrite como reflejo en vivo
+```
+
+### Fase 3: Durante la sesión — Sync
+
+```
+Cada vez que se actualiza todowrite:
+├── ¿Cambio significativo? (completar tarea, agregar subtarea)
+│   └── Actualizar plan.md para reflejar el estado actual
+│
+¿Antes de operación de riesgo? (task(), bash crítico)
+└── Sync plan.md primero (checkpoint)
+
+¿Se completó una fase?
+└── Sync plan.md + actualizar todowrite
+```
+
+### Fase 4: Archivado — Plan completado
+
+```
+¿El plan está completo? (todas las tareas marcadas)
+├── Último sync: todowrite → workspec/plans/active/plan.md
+├── Mover: workspec/plans/active/plan.md
+│        → workspec/plans/old/plan-YYYY-MM-DD-HHmm.md
+├── Limpiar todowrite
+├── workspec/plans/active/plan.md queda vacío (o arranca nuevo plan)
+└── Preguntar al usuario: "Plan completado. ¿Arrancamos uno nuevo?"
+```
+
+---
+
+## Formato de plan.md (persistente)
 
 ```markdown
-## Plan: [nombre descriptivo]
+# Plan Activo
 
-### Intención
-[lo que el usuario pidió, en sus palabras]
+## Intención
+[lo que estamos construyendo — una línea]
 
-### Alcance
-- Incluye: [lista]
-- Excluye: [lista]
+---
 
-### Fases
-1. **Fase 1: [nombre]**
-   - Tareas: [lista de tareas]
-   - Depende de: [nada | fase anterior | tarea específica]
+## Fases
 
-2. **Fase 2: [nombre]**
-   - ...
+### Fase 1: [Nombre de fase]
+- [x] Tarea completada
+- [ ] Tarea pendiente — descripción
+- [ ] Tarea pendiente — descripción
 
-### Tareas detalladas
-| ID | Tarea | Fase | Depende de | Tipo | ¿Paralelizable? |
-|---|---|---|---|---|---|
-| T1 | ... | 1 | — | implementar | sí |
-| T2 | ... | 1 | T1 | refactor | no |
-| T3 | ... | 2 | T1 | validar | sí |
+### Fase 2: [Nombre de fase]
+- [ ] Tarea pendiente — descripción
 
-### Asignación
-- T1, T3 → Executor A
-- T2 → Executor B
-- Auditor → Fase 2 completa
+---
+
+## Dependencias
+- [dependencias entre fases o tareas]
+
+---
+
+## Notas
+- [decisiones, insights, blockers]
 ```
+
+---
 
 ## Reglas
 
-- Una tarea = una unidad ejecutable por un Executor.
-- Si una tarea requiere más de 15 min, dividila.
-- Las dependencias son estrictas: North no asigna hasta que la dependencia esté resuelta.
-- El plan lo decide North. Esta skill solo estructura.
+1. **plan.md es la fuente de verdad.** Siempre escribir primero a plan.md antes de todowrite.
+2. **todowrite es el espejo en vivo.** Se actualiza a partir de plan.md, no al revés.
+3. **Checkpoint ante todo riesgo.** Antes de cualquier operación que pueda fallar (task(), bash crítico), sincronizar a plan.md.
+4. **Un plan siempre se completa o se archiva.** No existe "plan abandonado". Si no se completa, queda en active/ para la próxima sesión.
+5. **Archivar con timestamp.** Formato `plan-YYYY-MM-DD-HHmm.md` para tener trazabilidad.
+6. **El plan lo decide North. Esta skill solo estructura.**
