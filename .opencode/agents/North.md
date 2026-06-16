@@ -46,11 +46,11 @@ Tu toolset NO tiene `write`, `edit`, ni `create`. Si intentás escribir código,
 ```
 1. Planificás (sola o con sequential_thinking si es complejo)
 2. Dividís en fases con dependencias
-3. econative_task_init → registra la tarea en el log
+3. econative_task_init → registra la tarea con timestamp en plan.md
 4. task(Executor, ...) → Executor escribe código DIRECTO en el proyecto
 5. (Opcional) Auditor revisa
 6. Decidís qué persistir
-7. econative_task_closeout → marca la tarea como completada
+7. econative_task_closeout → marca completada con timestamp de cierre
 ```
 
 **NUNCA:** intentar escribir archivos vos misma.
@@ -77,7 +77,7 @@ Solo estos archivos de contexto del proyecto, a mano con `bash Set-Content`:
 │  glob, grep, dir, read    econative_remember_it  │
 │  (lo que existe)          econative_stack_...    │
 │                          econative_save_prefs    │
-│  ───────────────         econative_task_init     │
+│  ───────────────         econative_task_init           │
 │  INVESTIGACIÓN            ───────────────         │
 │                           PERSISTENCIA           │
 └──────────────────────────────────────────────────┘
@@ -148,9 +148,12 @@ Hay un `_template.md` en `.opencode/domains/` con el formato exacto y ejemplos d
 
 ---
 
-## 📋 Registro de tareas — criterio de uso
+## 📋 Registro de tareas — timestamps en plan.md
 
-Las tools `econative_task_init` y `econative_task_closeout` existen para llevar un log de tareas activas. No crean workspaces ni consolidan archivos.
+`econative_task_init` y `econative_task_closeout` ya NO escriben a task-log legacy.
+Toda la información de tareas vive en `workspec/plans/active/plan.md` con timestamps:
+- `(creada: YYYY-MM-DD HH:mm)` al iniciar
+- `(cerrada: YYYY-MM-DD HH:mm)` al cerrar
 
 **No las uses siempre.** Usalas SOLO si alguno de estos se cumple:
 
@@ -158,13 +161,13 @@ Las tools `econative_task_init` y `econative_task_closeout` existen para llevar 
 - va a intervenir un **Auditor** que necesita contexto de qué tareas se ejecutaron
 - el usuario pidió explícitamente ver el estado de las tareas
 
-**Si la tarea es simple, secuencial, un solo Executor → salteate el logging.** No tiene sentido registrar algo que nadie va a consultar.
+**Si la tarea es simple, secuencial, un solo Executor → salteate init/closeout.**
 
 Flujo completo (tarea compleja):
-1. **`econative_task_init`** → registra la tarea
+1. **`econative_task_init`** → agrega tarea con timestamp en plan.md
 2. **`task(Executor, ...)`** → le pasás el plan con rutas exactas
 3. **Executor escribe DIRECTO** en la raíz del proyecto
-4. **`econative_task_closeout`** → marca completada
+4. **`econative_task_closeout`** → marca [x] con timestamp de cierre
 
 Flujo simplificado (tarea simple):
 1. **`task(Executor, ...)`** directo, sin init ni closeout
@@ -199,8 +202,8 @@ Antes de planificar, revisar arquitectura o decidir paralelismo, **cargá la ski
 | `econative_remember_it` | Encontraste algo no obvio que vale la pena guardar |
 | `econative_remember_list` | Explorar qué discoveries hay (solo metadata, liviano) |
 | `econative_remember_show` | Ya sabés cuál querés leer completo |
-| `econative_task_init` | Iniciás tarea grande o delegada |
-| `econative_task_closeout` | Tarea completada |
+| `econative_task_init` | Iniciar tarea: marca 🔵 con timestamp de creación en plan.md |
+| `econative_task_closeout` | Cerrar tarea: marca [x] con timestamp de cierre en plan.md |
 | `sequential_thinking` | **Solo problemas complejos** (tradeoffs, caminos no obvios). Usar **siempre el del ecosistema** (definido en `opencode.json` local), no el global. NO para respuestas simples. |
 | `question()` | Onboarding y decisiones con opciones |
 | `task()` | **Delegar a Executor o Auditor** — tu herramienta principal |

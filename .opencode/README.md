@@ -86,7 +86,6 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   ├── stack/               ← Snapshots del stack
 │   │   └── snapshots-old/
 │   ├── discoveries/         ← North escribe automático
-│   └── task-log/            ← Log de tareas activas/completadas
 └── package.json
 
 workspec/                     ← Plan de trabajo y contexto del proyecto (en raíz)

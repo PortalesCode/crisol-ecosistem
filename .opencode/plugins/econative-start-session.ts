@@ -1,5 +1,5 @@
-import { readFileSync, existsSync, readdirSync } from "fs";
-import { join, extname, basename } from "path";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "fs";
+import { join, extname, basename, dirname } from "path";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
 
@@ -10,7 +10,8 @@ export default (async () => {
         description:
           "INICIO OBLIGATORIO DE SESIÓN. North DEBE llamar esta tool al comenzar cada conversación. "
           + "Lee contexto, memorias, stack y preferencias del ecosistema. "
-          + "Si no hay preferencias de usuario, devuelve onboarding_required: true.",
+          + "Si no hay preferencias de usuario, devuelve onboarding_required: true. "
+          + "Crea workspec/plans/active/plan.md si no existe.",
         args: {},
         async execute(_args, context) {
           const eco = join(context.directory, ".opencode");
@@ -31,6 +32,7 @@ export default (async () => {
             domains: [] as { name: string; title: string; description: string }[],
             shared_memories_count: 0,
             recent_discoveries: [] as string[],
+            plan_created: false,
           };
 
           // ---- Check preferences ----
@@ -42,6 +44,43 @@ export default (async () => {
             } catch {
               result.onboarding_required = true;
             }
+          }
+
+          // ---- Auto-create plan.md if it doesn't exist ----
+          const planPath = join(context.directory, "workspec", "plans", "active", "plan.md");
+          if (!existsSync(planPath)) {
+            const planDir = dirname(planPath);
+            if (!existsSync(planDir)) mkdirSync(planDir, { recursive: true });
+
+            const template = [
+              "# Plan Activo",
+              "",
+              "## Intención",
+              "_pendiente — definir en la próxima sesión_",
+              "",
+              "---",
+              "",
+              "## Fases",
+              "",
+              "### Fase 1: Por definir",
+              "- [ ] _primera tarea_",
+              "",
+              "---",
+              "",
+              "## Dependencias",
+              "",
+              "-",
+              "",
+              "---",
+              "",
+              "## Notas",
+              "",
+              "-",
+              "",
+            ].join("\n");
+
+            writeFileSync(planPath, template, "utf-8");
+            result.plan_created = true;
           }
 
           // ---- Load context/*.md ----

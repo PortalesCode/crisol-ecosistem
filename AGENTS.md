@@ -94,8 +94,8 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 | `econative_remember_it` | Guarda descubrimiento en Memoria/discoveries/ con título, descripción, contenido, tags, importancia y estado |
 | `econative_remember_list` | Lista descubrimientos — solo metadata (título, descripción, tags, importancia, fecha, estado). Sin contenido |
 | `econative_remember_show` | Lee el contenido COMPLETO de un descubrimiento por nombre de archivo |
-| `econative_task_init` | Registra tarea en el log del sistema |
-| `econative_task_closeout` | Marca tarea como completada en el log |
+| `econative_task_init` | Registra tarea con timestamp en plan.md |
+| `econative_task_closeout` | Marca tarea completada con timestamp de cierre en plan.md |
 | `econative_domain_list` | Escanea .opencode/domains/ y devuelve lista de dominios con título y descripción |
 | `econative_domain_reader` | Lee contenido completo de un dominio |
 

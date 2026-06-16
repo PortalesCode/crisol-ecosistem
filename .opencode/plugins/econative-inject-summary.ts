@@ -15,7 +15,7 @@ import type { Plugin } from "@opencode-ai/plugin";
 
 const ECO_SUMMARY = `## 📋 Tools del Ecosistema
 
-econative_start_session — Inicio obligatorio de sesión
+econative_start_session — Inicio obligatorio: contexto, prefs, auto-crea plan.md si no existe
 econative_context_read — Leer contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS)
 econative_plan_read — Consultar plan activo (workspec/plans/active/plan.md)
 econative_plan_sync — Sincronizar todowrite ↔ plan.md
@@ -26,8 +26,8 @@ econative_stack_snapshot — Escanear stack del proyecto
 econative_remember_it — Guardar descubrimiento en memoria compartida
 econative_remember_list — Listar descubrimientos (metadata)
 econative_remember_show — Leer descubrimiento completo
-econative_task_init — Iniciar tarea (solo si es compleja o múltiples Executors)
-econative_task_closeout — Cerrar tarea
+econative_task_init — Iniciar tarea: marca 🔵 en plan.md con timestamp de creación
+econative_task_closeout — Cerrar tarea: marca [x] con timestamp de cierre en plan.md
 econative_domain_list — Listar dominios de conocimiento
 econative_domain_reader — Leer dominio completo
 econative_domain_write — Crear o actualizar dominio

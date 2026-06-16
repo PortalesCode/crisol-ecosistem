@@ -1,16 +1,17 @@
-import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
+import { writeFileSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
-import { updateTaskStatus, addTaskToLatestPhase } from "./_plan-utils.js";
+import { updateTaskStatus, addTaskToLatestPhase, addCreationTimestamp, now } from "./_plan-utils.js";
 
 export default (async () => {
   return {
     tool: {
       econative_task_init: tool({
         description:
-          "Registra una nueva tarea en el log del sistema y la marca en el plan activo como 'en curso'. "
-          + "Si la tarea no existe en el plan, la agrega a la última fase activa. "
+          "Registra una nueva tarea en el plan activo como 'en curso' (🔵). "
+          + "Si la tarea existe en plan.md la marca como en curso. Si no existe, la agrega "
+          + "a la última fase activa. Incluye timestamp de creación. "
           + "Actualiza workspec/plans/active/plan.md.",
         args: {
           name: tool.schema.string().describe("Nombre corto de la tarea (kebab-case)"),
@@ -18,31 +19,10 @@ export default (async () => {
           assigned_to: tool.schema.string().optional().describe("Agente asignado (executor | auditor)"),
         },
         async execute(args, context) {
-          // ---- Log en task-log ----
-          const logDir = join(context.directory, ".opencode", "Memoria", "task-log");
-          if (!existsSync(logDir)) mkdirSync(logDir, { recursive: true });
-
-          const logFile = join(logDir, "active.json");
-          let log: Record<string, unknown>[] = [];
-          if (existsSync(logFile)) {
-            try { log = JSON.parse(readFileSync(logFile, "utf-8")); } catch { /* ignore */ }
-          }
-
-          const task = {
-            name: args.name,
-            description: args.description,
-            assigned_to: args.assigned_to ?? "executor",
-            created: new Date().toISOString(),
-            status: "active",
-          };
-
-          log.push(task);
-          writeFileSync(logFile, JSON.stringify(log, null, 2), "utf-8");
-
-          // ---- Sincronizar con plan.md ----
           const planPath = join(context.directory, "workspec", "plans", "active", "plan.md");
           let planUpdated = false;
           let taskAddedToPlan = false;
+          let timestampAdded = false;
 
           if (existsSync(planPath)) {
             const content = readFileSync(planPath, "utf-8");
@@ -54,30 +34,35 @@ export default (async () => {
               : args.name;
 
             let result = updateTaskStatus(lines, searchText, "pending");
-            // Si no encontró por description, buscar por name exacto
             if (!result.found && searchText !== args.name) {
               result = updateTaskStatus(lines, args.name, "pending");
             }
 
-            if (result.found) {
-              // Ya existe, marcar como 🔵
+            if (result.found && result.modifiedIndex !== undefined) {
+              // Ya existe — marcar como 🔵 y agregar timestamp si no tiene
               const markResult = updateTaskStatus(result.lines, searchText, "pending");
               lines = markResult.lines;
-              // Agregar 🔵 manualmente después del update
-              for (let i = 0; i < lines.length; i++) {
-                if (lines[i].includes(args.name) && lines[i].includes("- [ ]") && !lines[i].includes("🔵")) {
-                  lines[i] = lines[i].replace("- [ ] ", "- [ ] 🔵 ");
-                  break;
-                }
+
+              // Agregar 🔵 y timestamp de creación
+              const idx = markResult.modifiedIndex!;
+              let line = lines[idx];
+              if (!line.includes("🔵")) {
+                line = line.replace("- [ ] ", "- [ ] 🔵 ");
               }
+              const newLine = addCreationTimestamp(line, now());
+              if (newLine !== line) {
+                timestampAdded = true;
+              }
+              lines[idx] = newLine;
               planUpdated = true;
             } else {
-              // No existe, agregar a la última fase
+              // No existe — agregar a la última fase (addTaskToLatestPhase ya incluye timestamp)
               const addResult = addTaskToLatestPhase(lines, args.name, args.description);
               if (addResult.added) {
                 lines = addResult.lines;
                 planUpdated = true;
                 taskAddedToPlan = true;
+                timestampAdded = true;
               }
             }
 
@@ -86,9 +71,11 @@ export default (async () => {
             }
           }
 
-          const result: Record<string, unknown> = { ok: true, task, active_tasks: log.length };
-          if (planUpdated) result.plan_updated = true;
+          const result: Record<string, unknown> = { ok: true };
+          result.task_name = args.name;
+          result.plan_updated = planUpdated;
           if (taskAddedToPlan) result.task_added_to_plan = true;
+          if (timestampAdded) result.timestamp_created = true;
           return JSON.stringify(result);
         },
       }),
