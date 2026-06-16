@@ -2,7 +2,7 @@
 
 ## Remote URL
 <!-- URL base del repositorio remoto de skills -->
-https://raw.githubusercontent.com/tu-usuario/skill-library/main
+https://raw.githubusercontent.com/PortalesCode/skill-library/main
 
 ## Cómo funciona
 1. North detecta que necesita una skill para la tarea actual
