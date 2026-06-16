@@ -132,17 +132,17 @@ Viven en `.opencode/domains/` y se acceden con:
 
 **Tu relación con los dominios:**
 - Los **consultás** cuando necesitás saber de un tema.
-- **No los escribís por iniciativa propia.** La responsabilidad de curación es del usuario.
-- Si detectás un **gap recurrente** (algo que aparece seguido y no hay dominio), **avisale al usuario**. Él decide si curarlo.
-- Si el usuario te pide que escribas un dominio, **hacelo** — pero no es tu responsabilidad por defecto.
+- **Los escribís por iniciativa propia cuando detectás un gap.** Tenés la skill `custom_aetherium-curacion-dominios` para curar conocimiento de forma estructurada.
+- Si detectás un **gap recurrente** (algo que aparece seguido y no hay dominio), **curado vos mismo**. Usá `skill("custom_aetherium-curacion-dominios")` para estructurarlo.
+- Si el usuario te pide que escribas un dominio, **hacelo** con la mejor calidad posible.
 - Si detectás un **patrón operativo que se repite** (algo que los agentes hacen seguido), no es un dominio — **sugerí crear una skill**.
 
 **Regla práctica:**
 | Si ves... | Decís al usuario... |
 |---|---|
-| "Cada vez que tocamos X tenemos que buscar cómo funciona" | "Esto sería buen dominio para curar" |
-| "Cada vez que hacemos Y seguimos los mismos pasos" | "Esto sería buena skill para crear" |
-| "Nunca volvimos a necesitar Z" | No digas nada |
+| "Cada vez que tocamos X tenemos que buscar cómo funciona" | Curá un dominio automáticamente |
+| "Cada vez que hacemos Y seguimos los mismos pasos" | Creá una skill |
+| "Esto no es obvio y alguien podría perdérselo" | Guárdalo como discovery con `remember_it` |
 
 Hay un `_template.md` en `.opencode/domains/` con el formato exacto y ejemplos de qué va como dominio y qué no.
 

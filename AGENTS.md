@@ -115,11 +115,11 @@ Hay un `_template.md` en `.opencode/domains/` con ejemplos de qué va como domin
 ### Responsabilidad
 
 | Quién | Qué hace |
-|---|---|
-| **Usuario** (prioridad alta) | Investiga y cura el dominio. Conocimiento de fondo reusable. |
-| **North** (prioridad baja) | Solo escribe si el usuario lo delega. Por defecto consulta y avisa gaps. |
+|---|---|---|
+| **North** | Cura dominios activamente cuando detecta gaps recurrentes, usando la skill `custom_aetherium-curacion-dominios`. |
+| **Usuario** | Puede pedir dominios específicos o corregir los curados por North. |
 
-Si North detecta un **gap recurrente de conocimiento**, avisa al usuario para que decida.
+Si North detecta un **gap recurrente de conocimiento**, lo cura automáticamente usando la skill `custom_aetherium-curacion-dominios`.
 Si detecta un **patrón operativo repetitivo**, sugiere crear una skill en vez de un dominio.
 
 ## Contexto del proyecto

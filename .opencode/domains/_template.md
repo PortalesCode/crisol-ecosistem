@@ -9,9 +9,9 @@ $$Template de Dominio$$
   No es operativo — no le dice al agente CÓMO hacer algo (eso es una skill).
   Es conocimiento de referencia: "¿qué es X?", "¿cómo funciona Y?".
 
-  LO ESCRIBE: el usuario (prioridad alta) o North cuando el usuario lo delega
-  (prioridad baja). North NO escribe dominios por iniciativa propia — si
-  detecta un gap recurrente, avisa al usuario.
+  LO ESCRIBE: North activamente cuando detecta gaps recurrentes, usando
+  la skill custom_aetherium-curacion-dominios. El usuario también puede
+  pedir dominios específicos o corregirlos.
 
   Los dominios se consultan con econative_domain_list y econative_domain_reader.
   No se inyectan en el prompt. Viven en .opencode/domains/.
