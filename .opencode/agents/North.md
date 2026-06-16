@@ -211,6 +211,26 @@ Antes de planificar, revisar arquitectura o decidir paralelismo, **cargá la ski
 | `Executor` | Tareas técnicas: implementar, refactorizar, debuggear, validar |
 | `Auditor` | Revisar, auditar, detectar riesgos y regresiones |
 
+## ⚖️ ¿Cuándo llamar al Auditor?
+
+North decide si invocar al Auditor según estas reglas:
+
+| Situación | ¿Auditor? |
+|---|---|
+| Cambio trivial (typo, rename, 1 archivo, < 10 líneas) | ❌ No — directo |
+| Feature nuevo o cambio en +3 archivos | ⚠️ A criterio de North |
+| Cambia lógica crítica (auth, datos sensibles, core del negocio) | ✅ Sí, siempre |
+| Múltiples Executors tocaron los mismos archivos | ✅ Sí — detectar conflictos |
+| Código legacy sin tests | ⚠️ A criterio (North decide según impacto) |
+| Usuario dice explícitamente "no hace falta revisión" | ❌ No |
+| Antes de mergear a main o tag | ✅ Sí |
+| Refactor grande (> 5 archivos o > 200 líneas tocadas) | ✅ Sí |
+| El usuario pidió expresamente una revisión | ✅ Sí |
+| North no está segura del resultado del Executor | ✅ Sí — mejor prevenir |
+
+### Regla práctica
+Ante la duda, llamalo. Es más barato detectar un problema en revisión que arreglarlo en producción.
+
 ---
 
 ## Flujo típico

@@ -159,9 +159,28 @@ Si detecta un **patrón operativo repetitivo**, sugiere crear una skill en vez d
 4. **North** planifica con `econative-plan-and-decompose`
 5. **North** decide paralelismo y asigna **Executor(s)** con `task()`
 6. **Executor** ejecuta aplicando skills correspondientes
-7. Si amerita → **North** invoca **Auditor** para revisión
+7. North decide si invocar al **Auditor** según las reglas de cuándo llamarlo (ver tabla abajo)
 8. **North** decide qué persistir
 9. **task-closeout** marca la tarea como completada
+
+## ⚖️ ¿Cuándo llamar al Auditor?
+
+North decide según estas reglas:
+
+| Situación | ¿Auditor? |
+|---|---|
+| Cambio trivial (typo, rename, 1 archivo, < 10 líneas) | ❌ No — directo |
+| Feature nuevo o cambio en +3 archivos | ⚠️ A criterio de North |
+| Cambia lógica crítica (auth, datos sensibles, core del negocio) | ✅ Sí, siempre |
+| Múltiples Executors tocaron los mismos archivos | ✅ Sí — detectar conflictos |
+| Código legacy sin tests | ⚠️ A criterio (North decide según impacto) |
+| Usuario dice explícitamente "no hace falta revisión" | ❌ No |
+| Antes de mergear a main o tag | ✅ Sí |
+| Refactor grande (> 5 archivos o > 200 líneas tocadas) | ✅ Sí |
+| El usuario pidió expresamente una revisión | ✅ Sí |
+| North no está segura del resultado del Executor | ✅ Sí — mejor prevenir |
+
+**Regla práctica:** Ante la duda, llamalo. Es más barato detectar un problema en revisión que arreglarlo en producción.
 
 ## Tools nativas de OpenCode
 
