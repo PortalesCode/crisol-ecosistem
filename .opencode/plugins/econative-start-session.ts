@@ -1,5 +1,6 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "fs";
 import { join, extname, basename, dirname } from "path";
+import { parsePlan, formatPlanSummary } from "./_plan-utils.js";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
 
@@ -9,7 +10,7 @@ export default (async () => {
       econative_start_session: tool({
         description:
           "INICIO OBLIGATORIO DE SESIÓN. North DEBE llamar esta tool al comenzar cada conversación. "
-          + "Lee contexto, memorias, stack y preferencias del ecosistema. "
+          + "Lee contexto, plan activo, stack, memorias y preferencias del ecosistema. "
           + "Si no hay preferencias de usuario, devuelve onboarding_required: true. "
           + "Crea workspec/plans/active/plan.md si no existe.",
         args: {},
@@ -33,6 +34,7 @@ export default (async () => {
             shared_memories_count: 0,
             recent_discoveries: [] as string[],
             plan_created: false,
+            plan: null as Record<string, unknown> | null,
           };
 
           // ---- Check preferences ----
@@ -81,6 +83,23 @@ export default (async () => {
 
             writeFileSync(planPath, template, "utf-8");
             result.plan_created = true;
+          }
+
+          // ---- Read plan content if exists ----
+          if (existsSync(planPath)) {
+            try {
+              const planContent = readFileSync(planPath, "utf-8");
+              const planData = parsePlan(planContent);
+              result.plan = {
+                intention: planData.intention,
+                phases_count: planData.phases.length,
+                total_tasks: planData.stats.totalTasks,
+                completed_tasks: planData.stats.completedTasks,
+                in_progress_tasks: planData.stats.inProgressTasks,
+                progress: `${planData.stats.progressPercent}%`,
+                summary: formatPlanSummary(planData),
+              };
+            } catch { /* si falla parseo, plan queda null */ }
           }
 
           // ---- Load context/*.md ----

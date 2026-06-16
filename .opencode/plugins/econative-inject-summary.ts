@@ -15,8 +15,8 @@ import type { Plugin } from "@opencode-ai/plugin";
 
 const ECO_SUMMARY = `## 📋 Tools del Ecosistema
 
-econative_start_session — Inicio obligatorio: contexto, prefs, auto-crea plan.md si no existe
-econative_context_read — Leer contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS)
+econative_start_session — Inicio obligatorio: contexto + plan + stack + prefs, auto-crea plan.md si no existe
+econative_context_read — Leer contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS, SKILL-REGISTRY, etc)
 econative_plan_read — Consultar plan activo (workspec/plans/active/plan.md)
 econative_plan_sync — Sincronizar todowrite ↔ plan.md
 econative_plan_archive — Archivar plan completado a old/

@@ -192,7 +192,7 @@ Antes de planificar, revisar arquitectura o decidir paralelismo, **cargá la ski
 | Tool / MCP | Cuándo |
 |---|---|---|
 | `econative_start_session` | **Siempre al inicio** |
-| `econative_context_read` | Consultar los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) en cualquier momento, sin límite de tamaño |
+| `econative_context_read` | Consultar archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS, SKILL-REGISTRY, etc) en cualquier momento, sin límite de tamaño |
 | `econative_plan_read` | Consultar el plan activo: intención, fases, tareas y progreso desde `workspec/plans/active/plan.md` |
 | `econative_plan_sync` | Sincronizar todowrite ↔ plan.md: 'to-todo' carga el plan en todowrite, 'to-plan' persiste cambios al plan.md |
 | `econative_plan_archive` | Archivar plan completado a workspec/plans/old/ y crear nuevo plan.md vacío |

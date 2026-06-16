@@ -84,7 +84,7 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 | Tool | Qué hace |
 |---|---|
 | `econative_start_session` | **Obligatorio** al inicio. Carga contexto (desde `workspec/context/` en la raíz), memorias, stack, preferences |
-| `econative_context_read` | Lee los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) desde `workspec/context/` en la raíz. Sin límite de tamaño. Útil para consultar contexto sin depender de start_session |
+| `econative_context_read` | Lee todos los .md de `workspec/context/` (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS, SKILL-REGISTRY, etc). Sin límite de tamaño. Útil para consultar contexto sin depender de start_session |
 | `econative_plan_read` | Consulta el plan activo desde `workspec/plans/active/plan.md` — intención, fases, tareas, progreso |
 | `econative_plan_sync` | Sincroniza todowrite ↔ plan.md: `to-todo` carga el plan, `to-plan` persiste cambios |
 | `econative_plan_archive` | Archiva plan completado a `workspec/plans/old/` con timestamp y crea nuevo plan.md vacío |
