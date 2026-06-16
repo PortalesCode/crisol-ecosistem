@@ -4,8 +4,8 @@
 
 | Campo | Valor |
 |---|---|
-| **URL base (raw)** | `https://raw.githubusercontent.com/PortalesCode/skill-library/main` |
-| **Repositorio** | [PortalesCode/skill-library](https://github.com/PortalesCode/skill-library) |
+| **URL base (raw)** | _URL del repositorio remoto de skills_ |
+| **Repositorio** | _— pendiente —_ |
 | **Formato** | `index.json` con lista de skills + carpetas con SKILL.md |
 
 ---

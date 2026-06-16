@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "fs";
 import { join, extname, basename, dirname } from "path";
 import { parsePlan, formatPlanSummary } from "./_plan-utils.js";
+import { scanStack, resolvePlatforms } from "./_stack-utils.js";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
 
@@ -21,7 +22,6 @@ export default (async () => {
           const domainsDir = join(context.directory, "workspec", "domains");
 
           const prefsFile = join(memDir, "preferences-user", "config.json");
-          const stackFile = join(memDir, "stack", "current.json");
           const discoveriesDir = join(memDir, "discoveries");
 
           const result: Record<string, unknown> = {
@@ -128,10 +128,32 @@ export default (async () => {
             });
           }
 
-          // ---- Load stack ----
-          if (existsSync(stackFile)) {
-            try { result.stack = JSON.parse(readFileSync(stackFile, "utf-8")); } catch { /* ignore */ }
-          }
+          // ---- Scan stack ----
+          try {
+            const entries = scanStack(context.directory);
+            const snapshot = {
+              schema: "econative-stack-v2",
+              timestamp: new Date().toISOString(),
+              scanned_path: ".",
+              file_count: entries.length,
+              platforms: resolvePlatforms(entries),
+              technologies: entries.map(e => ({
+                file: e.file,
+                type: e.manifest_type,
+                technology: e.technology,
+                size_bytes: e.size_bytes,
+                ...e.parsed,
+              })),
+            };
+            result.stack = snapshot;
+
+            // Persistir a workspec/Memoria/stack/current.json
+            try {
+              const stackDir = join(memDir, "stack");
+              if (!existsSync(stackDir)) mkdirSync(stackDir, { recursive: true });
+              writeFileSync(join(stackDir, "current.json"), JSON.stringify(snapshot, null, 2), "utf-8");
+            } catch { /* ignore */ }
+          } catch { /* stack queda null si falla */ }
 
           // ---- Count discoveries ----
           if (existsSync(discoveriesDir)) {
