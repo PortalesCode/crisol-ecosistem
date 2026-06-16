@@ -60,6 +60,12 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 | `remember-it` | Guarda un recuerdo en la memoria compartida |
 | `remember-list` | Lista descubrimientos (solo metadata) |
 
+### Hooks
+
+| Plugin | Qué hace |
+|---|---|
+| `econative-inject-summary.ts` | Inyecta resumen compacto de tools, skills y reglas del Auditor en el system prompt de cada request. No es una tool — es un hook permanente. |
+
 ## Estructura
 
 ```
@@ -71,7 +77,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   │   ├── north/           ← Skills para North
 │   │   └── executor/        ← Skills para Executor
 │   └── extern/              ← Skills de terceros + custom del proyecto (según necesidad)
-├── plugins/                 ← 16 tools como plugins .ts
+├── plugins/                 ← 15 tools + 1 injector
 ├── domains/                 ← Dominios markdown planos (incluye _template.md como referencia de formato)
 ├── Memoria/
 │   ├── preferences-user/    ← Nombre, idioma del usuario
