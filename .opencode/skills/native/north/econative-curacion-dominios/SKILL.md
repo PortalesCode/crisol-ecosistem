@@ -1,6 +1,6 @@
 ---
 name: econative-curacion-dominios
-description: Usá esta skill cuando necesites crear, expandir o refinar un dominio de conocimiento en .opencode/domains/. North la usa activamente cuando detecta gaps recurrentes de información.
+description: Usá esta skill cuando necesites crear, expandir o refinar un dominio de conocimiento en workspec/domains/. North la usa activamente cuando detecta gaps recurrentes de información.
 ---
 
 # Curación de Dominios — Crisol-Eco

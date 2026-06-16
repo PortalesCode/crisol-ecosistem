@@ -28,7 +28,7 @@ North las registra acá automáticamente al instalarlas con `econative-skill-ins
 
 ### Dominios del proyecto
 
-Dominios curados en `.opencode/domains/` además del `_template.md` de referencia.
+Dominios curados en `workspec/domains/` además del `_template.md` de referencia.
 Se consultan bajo demanda con `econative_domain_list` / `econative_domain_reader`.
 
 North los registra acá automáticamente al curarlos con `econative-curacion-dominios`.
@@ -96,14 +96,14 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 | `econative_remember_show` | Lee el contenido COMPLETO de un descubrimiento por nombre de archivo |
 | `econative_task_init` | Registra tarea con timestamp en plan.md |
 | `econative_task_closeout` | Marca tarea completada con timestamp de cierre en plan.md |
-| `econative_domain_list` | Escanea .opencode/domains/ y devuelve lista de dominios con título y descripción |
+| `econative_domain_list` | Escanea workspec/domains/ y devuelve lista de dominios con título y descripción |
 | `econative_domain_reader` | Lee contenido completo de un dominio |
 
 ## Dominios disponibles
 
 Los dominios son **conocimiento pasivo, informativo y consultable** sobre un tema. No son operativos — no le dicen a un agente *cómo* hacer algo (eso es una skill), sino *qué es* algo o *cómo funciona*.
 
-Viven en `.opencode/domains/`. Se consultan bajo demanda con `econative_domain_list` y `econative_domain_reader`. No se inyectan en el prompt.
+Viven en `workspec/domains/`. Se consultan bajo demanda con `econative_domain_list` y `econative_domain_reader`. No se inyectan en el prompt.
 
 ### Formato
 
@@ -113,7 +113,7 @@ Solo 2 reglas fijas:
 
 Después de eso, markdown libre. No hay estructura rígida — el contenido se adapta al tema.
 
-Hay un `_template.md` en `.opencode/domains/` con ejemplos de qué va como dominio y qué no.
+Hay un `_template.md` en `workspec/domains/` con ejemplos de qué va como dominio y qué no.
 
 ### Responsabilidad
 

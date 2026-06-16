@@ -14,7 +14,7 @@ $$Template de Dominio$$
   pedir dominios específicos o corregirlos.
 
   Los dominios se consultan con econative_domain_list y econative_domain_reader.
-  No se inyectan en el prompt. Viven en .opencode/domains/.
+  No se inyectan en el prompt. Viven en workspec/domains/.
   ===========================================================================
 -->
 

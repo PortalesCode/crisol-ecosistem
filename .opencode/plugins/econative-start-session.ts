@@ -15,10 +15,9 @@ export default (async () => {
         args: {},
         async execute(_args, context) {
           const eco = join(context.directory, "workspec");
-          const ecoOpen = join(context.directory, ".opencode");
           const ctxDir = join(context.directory, "workspec/context");
           const memDir = join(eco, "Memoria");
-          const domainsDir = join(ecoOpen, "domains");
+          const domainsDir = join(context.directory, "workspec", "domains");
 
           const prefsFile = join(memDir, "preferences-user", "config.json");
           const stackFile = join(memDir, "stack", "current.json");

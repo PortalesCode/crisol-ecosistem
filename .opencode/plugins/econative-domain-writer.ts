@@ -1,7 +1,7 @@
 /**
  * econative-domain-writer.ts
  *
- * Crea o actualiza dominios en .opencode/domains/ con el formato simple de Crisol-Eco:
+ * Crea o actualiza dominios en workspec/domains/ con el formato simple de Crisol-Eco:
  *
  *   $$Título del Dominio$$
  *   &&Descripción breve&&
@@ -21,21 +21,21 @@ export default (async () => {
     tool: {
       econative_domain_write: tool({
         description:
-          "Crea o actualiza un dominio en .opencode/domains/. Usa el formato simple de Crisol-Eco:\n"
+          "Crea o actualiza un dominio en workspec/domains/. Usa el formato simple de Crisol-Eco:\n"
           + "  $$Título$$ (primera línea)\n"
           + "  &&Descripción&& (segunda línea)\n"
           + "  [markdown libre] (resto)\n"
           + "Complementa a domain_list (leer lista) y domain_reader (leer contenido).",
         args: {
           name: tool.schema.string().describe(
-            "Nombre del archivo sin .md. Ej: 'api-github-rest' → .opencode/domains/api-github-rest.md"
+            "Nombre del archivo sin .md. Ej: 'api-github-rest' → workspec/domains/api-github-rest.md"
           ),
           title: tool.schema.string().describe("Título del dominio (va en $$ ... $$)"),
           description: tool.schema.string().describe("Descripción de 1 línea (va en && ... &&)"),
           content: tool.schema.string().describe("Contenido markdown libre del dominio"),
         },
         async execute(args, context) {
-          const domainsDir = join(context.directory, ".opencode", "domains");
+          const domainsDir = join(context.directory, "workspec", "domains");
 
           // Asegurar que existe el directorio
           if (!existsSync(domainsDir)) {
@@ -56,7 +56,7 @@ export default (async () => {
             ok: true,
             action,
             file: `${args.name}.md`,
-            path: `.opencode/domains/${args.name}.md`,
+            path: `workspec/domains/${args.name}.md`,
             title: args.title,
           });
         },

@@ -52,7 +52,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 | `econative_task_closeout` | Marca tarea como completada |
 | `econative_domain_list` | Escanea dominios y devuelve lista con título y descripción |
 | `econative_domain_reader` | Lee dominio por nombre |
-| `econative_domain_write` | Crea o actualiza un dominio en .opencode/domains/ con el formato simple Crisol-Eco ($$title$$, &&desc&&, markdown libre) |
+| `econative_domain_write` | Crea o actualiza un dominio en workspec/domains/ con el formato simple Crisol-Eco ($$title$$, &&desc&&, markdown libre) |
 
 ## Comandos
 
@@ -71,7 +71,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 ## Estructura
 
 ```
-.opencode/                   ← Ecosistema (agentes, skills, plugins, dominios)
+.opencode/                   ← Ecosistema (agentes, skills, plugins)
 ├── AGENTS.md                ← Puerta de entrada
 ├── agents/                  ← North, Executor, Auditor
 ├── skills/
@@ -80,16 +80,16 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   │   └── executor/        ← Skills para Executor
 │   └── extern/              ← Skills de terceros + custom del proyecto (según necesidad)
 ├── plugins/                 ← 16 tools + 1 injector
-├── domains/                 ← Dominios markdown planos (incluye _template.md como referencia de formato)
 └── package.json
 
-workspec/                     ← Plan de trabajo, contexto y memoria del proyecto (en raíz)
+workspec/                     ← Plan de trabajo, contexto, dominios y memoria del proyecto (en raíz)
 ├── context/                  ← Documentación del proyecto
 │   ├── PROJECT.md            ← Qué es, stack, objetivo
 │   ├── CONVENTIONS.md        ← Reglas, estándares
 │   ├── ARCHITECTURE.md       ← Patrones, flujo, decisiones
 │   ├── STATUS.md             ← Estado actual, pendientes
 │   └── SKILL-REGISTRY.md     ← URL del catálogo remoto de skills
+├── domains/                  ← Dominios de conocimiento (markdown plano, consultable bajo demanda)
 ├── plans/
 │   ├── active/
 │   │   └── plan.md           ← Plan activo
@@ -119,7 +119,7 @@ Al abrir `mi-proyecto/` en OpenCode:
 - Los agentes se cargan desde `.opencode/agents/`
 - Las skills en `.opencode/skills/native/` se registran automáticamente
 - Los plugins en `.opencode/plugins/` se compilan como tools
-- Los dominios se consultan bajo demanda desde `.opencode/domains/`
+- Los dominios se consultan bajo demanda desde `workspec/domains/`
 - El contexto del proyecto se lee desde `workspec/context/` (raíz, fuera de `.opencode/`)
 
 ## Filosofía

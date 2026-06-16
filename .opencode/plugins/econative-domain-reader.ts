@@ -8,12 +8,12 @@ export default (async () => {
     tool: {
       econative_domain_reader: tool({
         description:
-          "Lee el contenido completo de un dominio de .opencode/domains/ por su nombre (filename sin .md).",
+          "Lee el contenido completo de un dominio de workspec/domains/ por su nombre (filename sin .md).",
         args: {
           domain: tool.schema.string().describe("Nombre del dominio (filename sin .md), ej: metatrader5"),
         },
         async execute(args, context) {
-          const domainPath = join(context.directory, ".opencode", "domains", `${args.domain}.md`);
+          const domainPath = join(context.directory, "workspec", "domains", `${args.domain}.md`);
 
           if (!existsSync(domainPath)) {
             return JSON.stringify({

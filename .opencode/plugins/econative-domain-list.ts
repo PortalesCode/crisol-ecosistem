@@ -8,11 +8,11 @@ export default (async () => {
     tool: {
       econative_domain_list: tool({
         description:
-          "Escanea .opencode/domains/ y devuelve la lista de dominios disponibles con su título ($$) y descripción (&&). "
+          "Escanea workspec/domains/ y devuelve la lista de dominios disponibles con su título ($$) y descripción (&&). "
           + "North usa esta lista para decidir qué dominio leer completo con econative_domain_reader.",
         args: {},
         async execute(_args, context) {
-          const domainsPath = join(context.directory, ".opencode", "domains");
+          const domainsPath = join(context.directory, "workspec", "domains");
 
           if (!existsSync(domainsPath)) {
             return JSON.stringify({ ok: true, count: 0, domains: [] });

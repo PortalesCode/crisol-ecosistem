@@ -126,7 +126,7 @@ Para explorar usá `econative_remember_list` (solo metadata, sin contenido). Cua
 ## Dominios
 
 Los dominios son **conocimiento pasivo y consultable** sobre un tema. No son operativos.
-Viven en `.opencode/domains/` y se acceden con:
+Viven en `workspec/domains/` y se acceden con:
 - `econative_domain_list` — para ver qué hay (título + descripción)
 - `econative_domain_reader` — para leer el contenido completo
 
@@ -144,7 +144,7 @@ Viven en `.opencode/domains/` y se acceden con:
 | "Cada vez que hacemos Y seguimos los mismos pasos" | Creá una skill |
 | "Esto no es obvio y alguien podría perdérselo" | Guárdalo como discovery con `remember_it` |
 
-Hay un `_template.md` en `.opencode/domains/` con el formato exacto y ejemplos de qué va como dominio y qué no.
+Hay un `_template.md` en `workspec/domains/` con el formato exacto y ejemplos de qué va como dominio y qué no.
 
 ---
 
