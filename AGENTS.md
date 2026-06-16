@@ -65,6 +65,7 @@ que la operativa es la misma — solo cambia qué se implementa, debuggea o vali
 | `native/north/econative-plan-and-decompose` | North | Planificar intención → fases → tareas |
 | `native/north/econative-architecture-review` | North | Revisar arquitectura y detectar riesgos |
 | `native/north/econative-parallel-dispatch` | North | Detectar independencia y lanzar ejecutores paralelos |
+| `native/north/econative-curacion-dominios` | North | Curar dominios: detectar gap, investigar, escribir, verificar |
 | `native/executor/econative-implement-safe` | Executor | Implementación segura (workspace, reglas, rollback) |
 | `native/executor/econative-debug-systematic` | Executor | Debugging metódico (6 pasos + antipatrones) |
 | `native/executor/econative-test-and-validate` | Executor | Testing y validación con comandos por lenguaje |
@@ -116,10 +117,10 @@ Hay un `_template.md` en `.opencode/domains/` con ejemplos de qué va como domin
 
 | Quién | Qué hace |
 |---|---|---|
-| **North** | Cura dominios activamente cuando detecta gaps recurrentes, usando la skill `custom_aetherium-curacion-dominios`. |
+| **North** | Cura dominios activamente cuando detecta gaps recurrentes, usando la skill `econative-curacion-dominios`. |
 | **Usuario** | Puede pedir dominios específicos o corregir los curados por North. |
 
-Si North detecta un **gap recurrente de conocimiento**, lo cura automáticamente usando la skill `custom_aetherium-curacion-dominios`.
+Si North detecta un **gap recurrente de conocimiento**, lo cura automáticamente usando la skill `econative-curacion-dominios`.
 Si detecta un **patrón operativo repetitivo**, sugiere crear una skill en vez de un dominio.
 
 ## Contexto del proyecto

@@ -23,6 +23,7 @@ Son **patrones operativos** del ecosistema — definen *cómo trabajan los agent
 | `econative-plan-and-decompose` | Intención → Plan → Fases → Tareas |
 | `econative-architecture-review` | Límites, acoplamiento, flujo, impacto |
 | `econative-parallel-dispatch` | Detectar independencia y lanzar en paralelo |
+| `econative-curacion-dominios` | Curar dominios: detectar gap → investigar → escribir → verificar |
 | `econative-debug-systematic` | Debugging metódico |
 | `econative-implement-safe` | Implementación segura |
 | `econative-test-and-validate` | Testing y validación |
@@ -51,6 +52,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 | `econative_task_closeout` | Marca tarea como completada |
 | `econative_domain_list` | Escanea dominios y devuelve lista con título y descripción |
 | `econative_domain_reader` | Lee dominio por nombre |
+| `econative_domain_write` | Crea o actualiza un dominio en .opencode/domains/ con el formato simple Crisol-Eco ($$title$$, &&desc&&, markdown libre) |
 
 ## Comandos
 
@@ -77,7 +79,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   │   ├── north/           ← Skills para North
 │   │   └── executor/        ← Skills para Executor
 │   └── extern/              ← Skills de terceros + custom del proyecto (según necesidad)
-├── plugins/                 ← 15 tools + 1 injector
+├── plugins/                 ← 16 tools + 1 injector
 ├── domains/                 ← Dominios markdown planos (incluye _template.md como referencia de formato)
 ├── Memoria/
 │   ├── preferences-user/    ← Nombre, idioma del usuario

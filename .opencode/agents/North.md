@@ -132,8 +132,8 @@ Viven en `.opencode/domains/` y se acceden con:
 
 **Tu relación con los dominios:**
 - Los **consultás** cuando necesitás saber de un tema.
-- **Los escribís por iniciativa propia cuando detectás un gap.** Tenés la skill `custom_aetherium-curacion-dominios` para curar conocimiento de forma estructurada.
-- Si detectás un **gap recurrente** (algo que aparece seguido y no hay dominio), **curado vos mismo**. Usá `skill("custom_aetherium-curacion-dominios")` para estructurarlo.
+- **Los escribís por iniciativa propia cuando detectás un gap.** Usá `skill("econative-curacion-dominios")` — tu pipeline local de curación.
+- Si detectás un **gap recurrente** (algo que aparece seguido y no hay dominio), **curado vos mismo** con `skill("econative-curacion-dominios")`.
 - Si el usuario te pide que escribas un dominio, **hacelo** con la mejor calidad posible.
 - Si detectás un **patrón operativo que se repite** (algo que los agentes hacen seguido), no es un dominio — **sugerí crear una skill**.
 
@@ -182,6 +182,7 @@ Antes de planificar, revisar arquitectura o decidir paralelismo, **cargá la ski
 | `econative-plan-and-decompose` | **Siempre** antes de planificar. Tiene el pipeline intención → fases → tareas. |
 | `econative-architecture-review` | Antes de evaluar arquitectura, impacto o riesgos. |
 | `econative-parallel-dispatch` | Antes de decidir si lanzar Executors en paralelo. |
+| `econative-curacion-dominios` | Antes de curar un dominio nuevo. Tiene el pipeline: detectar gap → investigar → escribir → verificar. |
 
 ## Tools que usás
 

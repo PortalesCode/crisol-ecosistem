@@ -17,7 +17,7 @@ Ecosistema de desarrollo autónomo para OpenCode. North planifica, Executor impl
 mi-proyecto/
 ├── .opencode/              # Ecosistema (agentes, skills, plugins, dominios, memoria)
 │   ├── agents/             # North, Executor, Auditor
-│   ├── skills/native/      # 8 skills operativas
+│   ├── skills/native/      # 9 skills operativas
 │   ├── plugins/            # 15 tools TypeScript + _plan-utils.ts
 │   ├── domains/            # Conocimiento pasivo consultable
 │   └── Memoria/            # Preferencias, stack, descubrimientos

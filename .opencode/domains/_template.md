@@ -10,7 +10,7 @@ $$Template de Dominio$$
   Es conocimiento de referencia: "¿qué es X?", "¿cómo funciona Y?".
 
   LO ESCRIBE: North activamente cuando detecta gaps recurrentes, usando
-  la skill custom_aetherium-curacion-dominios. El usuario también puede
+  la skill econative-curacion-dominios. El usuario también puede
   pedir dominios específicos o corregirlos.
 
   Los dominios se consultan con econative_domain_list y econative_domain_reader.

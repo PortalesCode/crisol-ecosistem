@@ -30,6 +30,7 @@ econative_task_init — Iniciar tarea (solo si es compleja o múltiples Executor
 econative_task_closeout — Cerrar tarea
 econative_domain_list — Listar dominios de conocimiento
 econative_domain_reader — Leer dominio completo
+econative_domain_write — Crear o actualizar dominio
 
 ## ⚡ Skills Nativas (cargar con skill("..."))
 
@@ -40,6 +41,7 @@ econative-implement-safe — Implementación segura (Executor)
 econative-debug-systematic — Debugging metódico (Executor)
 econative-test-and-validate — Testing y validación (Executor)
 econative-audit-review — Revisión estructurada 6 dimensiones (Auditor)
+econative-curacion-dominios — Curar dominios: detectar gap → investigar → escribir → verificar
 econative-skill-installer — Instalar skill desde GitHub (requiere reinicio)
 
 ## ⚖️ ¿Auditor? Reglas rápidas
