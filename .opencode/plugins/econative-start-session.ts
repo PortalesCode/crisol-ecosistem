@@ -14,7 +14,7 @@ export default (async () => {
         args: {},
         async execute(_args, context) {
           const eco = join(context.directory, ".opencode");
-          const ctxDir = join(context.directory, "context");
+          const ctxDir = join(context.directory, "workspec/context");
           const memDir = join(eco, "Memoria");
           const domainsDir = join(eco, "domains");
 

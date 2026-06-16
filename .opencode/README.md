@@ -37,7 +37,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 | Tool | Qué hace |
 |---|---|
 | `econative_start_session` | Inicio obligatorio — carga contexto, memorias, preferences |
-| `econative_context_read` | Lee los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) desde `context/` en raíz, sin límite de tamaño |
+| `econative_context_read` | Lee los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) desde `workspec/context/` en la raíz, sin límite de tamaño |
 | `econative_save_preferences` | Guarda nombre e idioma del usuario |
 | `econative_stack_snapshot` | Toma snapshot del stack y archiva versiones anteriores |
 | `econative_remember_it` | Guarda recuerdo compartido con fecha e importancia |
@@ -81,11 +81,17 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   └── remember-list.md       ← Listar descubrimientos
 └── package.json
 
-context/                     ← Hermana de .opencode/ — Estado del proyecto (en raíz)
-├── PROJECT.md               ← Qué es el proyecto, stack, objetivo
-├── CONVENTIONS.md           ← Reglas del repo, estándares
-├── ARCHITECTURE.md          ← Patrones, flujo, decisiones arquitectónicas
-└── STATUS.md                ← Estado actual, pendientes, issues
+workspec/                     ← Plan de trabajo y contexto del proyecto (en raíz)
+├── context/                  ← Documentación del proyecto
+│   ├── PROJECT.md            ← Qué es, stack, objetivo
+│   ├── CONVENTIONS.md        ← Reglas, estándares
+│   ├── ARCHITECTURE.md       ← Patrones, flujo, decisiones
+│   ├── STATUS.md             ← Estado actual, pendientes
+│   └── SKILL-REGISTRY.md     ← URL del catálogo remoto de skills
+└── plans/
+    ├── active/
+    │   └── plan.md           ← Plan activo
+    └── old/                  ← Planes completados
 ```
 
 ## Instalación
@@ -98,7 +104,7 @@ git clone <repo-url> .opencode
 (Opcional) Si se quiere contexto inicial:
 
 ```bash
-mkdir context/
+mkdir -p workspec/context
 # Escribir PROJECT.md, CONVENTIONS.md, ARCHITECTURE.md, STATUS.md
 ```
 
@@ -107,7 +113,7 @@ Al abrir `mi-proyecto/` en OpenCode:
 - Las skills en `.opencode/skills/native/` se registran automáticamente
 - Los plugins en `.opencode/plugins/` se compilan como tools
 - Los dominios se consultan bajo demanda desde `.opencode/domains/`
-- El contexto del proyecto se lee desde `context/` (raíz, fuera de `.opencode/`)
+- El contexto del proyecto se lee desde `workspec/context/` (raíz, fuera de `.opencode/`)
 
 ## Filosofía
 
@@ -117,7 +123,7 @@ Executor = operación
 Auditor = control
 Skills = cómo trabajar
 Domains = qué saber (pasivo, consultable bajo demanda, no se inyecta en el prompt)
-Context = estado del proyecto (en raíz, NO dentro de .opencode/)
+Context = estado del proyecto (en workspec/context/, NO dentro de .opencode/)
 Memoria = buffer entre efímero y permanente
 Work = trabajo temporal
 ```

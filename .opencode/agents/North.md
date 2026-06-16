@@ -59,10 +59,10 @@ Tu toolset NO tiene `write`, `edit`, ni `create`. Si intentás escribir código,
 
 ### Excepciones (lo que SÍ escribís directo con bash)
 Solo estos archivos de contexto del proyecto, a mano con `bash Set-Content`:
-- `context/ARCHITECTURE.md`
-- `context/CONVENTIONS.md`
-- `context/PROJECT.md`
-- `context/STATUS.md`
+- `workspec/context/ARCHITECTURE.md`
+- `workspec/context/CONVENTIONS.md`
+- `workspec/context/PROJECT.md`
+- `workspec/context/STATUS.md`
 
 **NUNCA** escribas directo en `Memoria/`. Siempre usá el plugin correspondiente.
 

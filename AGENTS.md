@@ -80,8 +80,8 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 
 | Tool | Qué hace |
 |---|---|
-| `econative_start_session` | **Obligatorio** al inicio. Carga contexto (desde `context/` en raíz), memorias, stack, preferences |
-| `econative_context_read` | Lee los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) desde `context/` en la raíz. Sin límite de tamaño. Útil para consultar contexto sin depender de start_session |
+| `econative_start_session` | **Obligatorio** al inicio. Carga contexto (desde `workspec/context/` en la raíz), memorias, stack, preferences |
+| `econative_context_read` | Lee los 4 archivos de contexto (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS) desde `workspec/context/` en la raíz. Sin límite de tamaño. Útil para consultar contexto sin depender de start_session |
 | `econative_save_preferences` | Guarda nombre e idioma del usuario en Memoria/preferences-user/ |
 | `econative_stack_snapshot` | Escanea stack, escribe current.json y archiva snapshots viejos |
 | `econative_remember_it` | Guarda descubrimiento en Memoria/discoveries/ con título, descripción, contenido, tags, importancia y estado |
@@ -128,14 +128,14 @@ Si detecta un **patrón operativo repetitivo**, sugiere crear una skill en vez d
 
 ## Contexto del proyecto
 
-> Los archivos de contexto viven en `context/` en la **raíz del proyecto** (no en `.opencode/context/`). Se acceden con `econative_context_read` en cualquier momento, o via `econative_start_session` al inicio de sesión.
+> Los archivos de contexto viven en `workspec/context/` en la **raíz del proyecto** (no dentro de `.opencode/`). Se acceden con `econative_context_read` en cualquier momento, o via `econative_start_session` al inicio de sesión.
 
 | Archivo | Propósito | Lo escribe |
 |---|---|---|
-| `context/PROJECT.md` | Qué es el proyecto, stack, objetivos | North |
-| `context/CONVENTIONS.md` | Reglas del repo | North |
-| `context/ARCHITECTURE.md` | Arquitectura actual | North |
-| `context/STATUS.md` | Estado actual, pendientes, issues | North |
+| `workspec/context/PROJECT.md` | Qué es el proyecto, stack, objetivos | North |
+| `workspec/context/CONVENTIONS.md` | Reglas del repo | North |
+| `workspec/context/ARCHITECTURE.md` | Arquitectura actual | North |
+| `workspec/context/STATUS.md` | Estado actual, pendientes, issues | North |
 
 ## Memoria del ecosistema
 

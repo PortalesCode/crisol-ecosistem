@@ -9,16 +9,16 @@ export default (async () => {
       econative_context_read: tool({
         description:
           "Lee los 4 archivos de contexto del proyecto (PROJECT.md, CONVENTIONS.md, ARCHITECTURE.md, STATUS.md) "
-          + "desde context/ en la raíz del proyecto. Devuelve cada archivo con su nombre y contenido completo. "
+          + "desde workspec/context/ en la raíz del proyecto. Devuelve cada archivo con su nombre y contenido completo. "
           + "Útil para que North consulte el estado actual del proyecto sin depender de start_session.",
         args: {},
         async execute(_args, context) {
-          const ctxDir = join(context.directory, "context");
+          const ctxDir = join(context.directory, "workspec", "context");
 
           if (!existsSync(ctxDir)) {
             return JSON.stringify({
               ok: false,
-              error: "No se encontró la carpeta context/ en la raíz del proyecto",
+              error: "No se encontró la carpeta workspec/context/ en la raíz del proyecto",
             });
           }
 

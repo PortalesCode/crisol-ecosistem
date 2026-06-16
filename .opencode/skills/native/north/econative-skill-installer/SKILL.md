@@ -11,7 +11,7 @@ Instala skills bajo demanda desde un repositorio remoto. North la usa cuando det
 - Verifica si ya está instalada en `.opencode/skills/extern/<skill>/`
 
 ### 2. Si no está instalada → instalar
-- Lee `context/SKILL-REGISTRY.md` para obtener la URL base del repositorio remoto
+- Lee `workspec/context/SKILL-REGISTRY.md` para obtener la URL base del repositorio remoto
 - Consulta `<URL>/index.json` para verificar que la skill exista
 - Descarga `<URL>/<skill>/SKILL.md` (y archivos adicionales si existen)
 - Escribe los archivos en `.opencode/skills/extern/<skill>/`
@@ -57,4 +57,4 @@ https://raw.githubusercontent.com/tu-usuario/skill-library/main/
 2. NO descargar el catálogo completo
 3. Si la descarga falla, North debe informar al usuario y continuar sin la skill
 4. Si la skill remota no existe en el index, North informa y no crea archivos vacíos
-5. La URL del registro se lee de `context/SKILL-REGISTRY.md`, no está hardcodeada
+5. La URL del registro se lee de `workspec/context/SKILL-REGISTRY.md`, no está hardcodeada
