@@ -1,10 +1,25 @@
-# Crisol-Eco — agregá esto a tu .gitignore
+# Crisol-Eco — .gitignore refinado
 #
-# Si tu proyecto ya tiene .gitignore, agregá las siguientes líneas.
-# Si NO tiene .gitignore, crealo con este contenido.
-#
-# Esto evita que la configuración del ecosistema se trackee en tu repo.
-# El ecosistema se despliega en opencode/ (y se renombra a .opencode/).
+# Ignoramos solo lo transitorio. .opencode/ viaja con el proyecto.
 
-.opencode/
-opencode/
+# Dependencias
+node_modules/
+.opencode/node_modules/
+
+# Memoria transitoria (preferencias de usuario, snapshots de stack)
+.opencode/Memoria/preferences-user/
+.opencode/Memoria/stack/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.pyc
+.env
+.venv/
