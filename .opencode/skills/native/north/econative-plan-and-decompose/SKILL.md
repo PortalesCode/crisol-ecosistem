@@ -10,6 +10,7 @@ description: Transforma una intención en un plan estructurado con fases, tareas
 - North recibe una intención del usuario y necesita estructurarla
 - Al inicio de sesión para cargar el plan activo desde `workspec/plans/active/plan.md`
 - Al cerrar una fase o plan completo para archivarlo
+- Cuando se necesita consultar el estado del plan activo → usar `econative_plan_read`
 
 ---
 
@@ -18,7 +19,7 @@ description: Transforma una intención en un plan estructurado con fases, tareas
 ### Fase 0: Inicio de sesión — Cargar plan activo
 
 ```
-1. Leer workspec/plans/active/plan.md
+1. Ejecutar `econative_plan_read` para cargar el plan activo desde workspec/plans/active/plan.md
 2. ¿Hay un plan con fases/tareas?
    ├── Sí → Plasmar en todowrite (reflejo en vivo)
    │        "Acá retomamos: [intención], fase [X], tareas pendientes: [lista]"
@@ -106,6 +107,15 @@ Cada vez que se actualiza todowrite:
 ## Notas
 - [decisiones, insights, blockers]
 ```
+
+---
+
+## Tools del pipeline
+
+| Tool | Propósito |
+|---|---|
+| `econative_plan_read` | Consultar el plan activo: intención, fases, tareas, progreso |
+| `todowrite` | Reflejo en vivo del plan durante la sesión (efímero) |
 
 ---
 
