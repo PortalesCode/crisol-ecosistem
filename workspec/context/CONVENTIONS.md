@@ -34,8 +34,7 @@ proyecto/
 ├── workspec/           ← Plan de trabajo y contexto
 │   ├── context/         ← Documentación del proyecto
 │   └── plans/           ← Planes activos e históricos
-├── .opencode/          ← Ecosistema Crisol-Eco
-└── skill-library/      ← Catálogo de skills (repo aparte)
+└── .opencode/          ← Ecosistema Crisol-Eco
 ```
 
 ---

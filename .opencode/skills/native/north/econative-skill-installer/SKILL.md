@@ -28,7 +28,7 @@ Instala skills bajo demanda desde un repositorio remoto. North la usa cuando det
 ## Formato del repositorio remoto
 
 ```
-https://raw.githubusercontent.com/tu-usuario/skill-library/main/
+https://raw.githubusercontent.com/PortalesCode/skill-library/main/
 ├── index.json
 │   {
 │     "skills": [
