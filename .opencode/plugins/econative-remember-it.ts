@@ -18,7 +18,7 @@ export default (async () => {
           state: tool.schema.string().optional().describe("Estado: active (default) | deprecated"),
         },
         async execute(args, context) {
-          const discoveriesDir = join(context.directory, ".opencode", "Memoria", "discoveries");
+          const discoveriesDir = join(context.directory, "workspec", "Memoria", "discoveries");
           if (!existsSync(discoveriesDir)) mkdirSync(discoveriesDir, { recursive: true });
 
           const now = new Date();

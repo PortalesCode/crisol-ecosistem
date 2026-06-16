@@ -71,7 +71,7 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 ## Estructura
 
 ```
-.opencode/                   ← Ecosistema (agentes, skills, plugins, dominios, memoria)
+.opencode/                   ← Ecosistema (agentes, skills, plugins, dominios)
 ├── AGENTS.md                ← Puerta de entrada
 ├── agents/                  ← North, Executor, Auditor
 ├── skills/
@@ -81,24 +81,24 @@ Skills de **terceros** y **creadas/customizadas por el usuario** para el proyect
 │   └── extern/              ← Skills de terceros + custom del proyecto (según necesidad)
 ├── plugins/                 ← 16 tools + 1 injector
 ├── domains/                 ← Dominios markdown planos (incluye _template.md como referencia de formato)
-├── Memoria/
-│   ├── preferences-user/    ← Nombre, idioma del usuario
-│   ├── stack/               ← Snapshots del stack
-│   │   └── snapshots-old/
-│   ├── discoveries/         ← North escribe automático
 └── package.json
 
-workspec/                     ← Plan de trabajo y contexto del proyecto (en raíz)
+workspec/                     ← Plan de trabajo, contexto y memoria del proyecto (en raíz)
 ├── context/                  ← Documentación del proyecto
 │   ├── PROJECT.md            ← Qué es, stack, objetivo
 │   ├── CONVENTIONS.md        ← Reglas, estándares
 │   ├── ARCHITECTURE.md       ← Patrones, flujo, decisiones
 │   ├── STATUS.md             ← Estado actual, pendientes
 │   └── SKILL-REGISTRY.md     ← URL del catálogo remoto de skills
-└── plans/
-    ├── active/
-    │   └── plan.md           ← Plan activo
-    └── old/                  ← Planes completados
+├── plans/
+│   ├── active/
+│   │   └── plan.md           ← Plan activo
+│   └── old/                  ← Planes completados
+└── Memoria/                  ← Preferencias, stack, descubrimientos
+    ├── preferences-user/     ← Nombre, idioma del usuario
+    ├── stack/                ← Snapshots del stack
+    │   └── snapshots-old/
+    └── discoveries/          ← North escribe automático
 ```
 
 ## Instalación
@@ -131,7 +131,7 @@ Auditor = control
 Skills = cómo trabajar
 Domains = qué saber (pasivo, consultable bajo demanda, no se inyecta en el prompt)
 Context = estado del proyecto (en workspec/context/, NO dentro de .opencode/)
-Memoria = buffer entre efímero y permanente
+Memoria = buffer entre efímero y permanente (en workspec/Memoria/, fuera de .opencode/)
 Work = trabajo temporal
 ```
 

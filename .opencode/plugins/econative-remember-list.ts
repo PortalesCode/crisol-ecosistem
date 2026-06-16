@@ -16,7 +16,7 @@ export default (async () => {
           limit: tool.schema.number().optional().describe("Máx resultados (default: 20)"),
         },
         async execute(args, context) {
-          const discoveriesDir = join(context.directory, ".opencode", "Memoria", "discoveries");
+          const discoveriesDir = join(context.directory, "workspec", "Memoria", "discoveries");
 
           if (!existsSync(discoveriesDir)) {
             return JSON.stringify({ ok: true, count: 0, discoveries: [] });

@@ -15,15 +15,15 @@ Ecosistema de desarrollo autónomo para OpenCode. North planifica, Executor impl
 
 ```
 mi-proyecto/
-├── .opencode/              # Ecosistema (agentes, skills, plugins, dominios, memoria)
+├── .opencode/              # Ecosistema (agentes, skills, plugins, dominios)
 │   ├── agents/             # North, Executor, Auditor
 │   ├── skills/native/      # 9 skills operativas
 │   ├── plugins/            # 15 tools TypeScript + _plan-utils.ts
-│   ├── domains/            # Conocimiento pasivo consultable
-│   └── Memoria/            # Preferencias, stack, descubrimientos
+│   └── domains/            # Conocimiento pasivo consultable
 ├── workspec/
 │   ├── context/            # PROJECT, CONVENTIONS, ARCHITECTURE, STATUS
-│   └── plans/              # Plan activo + histórico
+│   ├── plans/              # Plan activo + histórico
+│   └── Memoria/            # Preferencias, stack, descubrimientos
 ├── AGENTS.md               # Fuente de verdad del ecosistema
 └── README.md               # Esta documentación
 ```

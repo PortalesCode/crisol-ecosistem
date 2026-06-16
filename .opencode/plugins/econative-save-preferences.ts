@@ -8,13 +8,13 @@ export default (async () => {
     tool: {
       econative_save_preferences: tool({
         description:
-          "Guarda las preferencias del usuario (nombre e idioma) en .opencode/Memoria/preferences-user/config.json.",
+          "Guarda las preferencias del usuario (nombre e idioma) en workspec/Memoria/preferences-user/config.json.",
         args: {
           name: tool.schema.string().describe("Nombre del usuario"),
           language: tool.schema.string().describe("Idioma preferido: es | en | bilingue"),
         },
         async execute(args, context) {
-          const prefsDir = join(context.directory, ".opencode", "Memoria", "preferences-user");
+          const prefsDir = join(context.directory, "workspec", "Memoria", "preferences-user");
           if (!existsSync(prefsDir)) mkdirSync(prefsDir, { recursive: true });
 
           writeFileSync(

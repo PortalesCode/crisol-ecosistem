@@ -14,10 +14,11 @@ export default (async () => {
           + "Crea workspec/plans/active/plan.md si no existe.",
         args: {},
         async execute(_args, context) {
-          const eco = join(context.directory, ".opencode");
+          const eco = join(context.directory, "workspec");
+          const ecoOpen = join(context.directory, ".opencode");
           const ctxDir = join(context.directory, "workspec/context");
           const memDir = join(eco, "Memoria");
-          const domainsDir = join(eco, "domains");
+          const domainsDir = join(ecoOpen, "domains");
 
           const prefsFile = join(memDir, "preferences-user", "config.json");
           const stackFile = join(memDir, "stack", "current.json");

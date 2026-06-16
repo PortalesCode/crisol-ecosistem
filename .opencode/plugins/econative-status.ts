@@ -76,7 +76,7 @@ export default (async () => {
           }
 
           // ---- Stack ----
-          const stackPath = join(root, ".opencode", "Memoria", "stack", "current.json");
+          const stackPath = join(root, "workspec", "Memoria", "stack", "current.json");
           if (existsSync(stackPath)) {
             try {
               const stack = JSON.parse(readFileSync(stackPath, "utf-8"));
@@ -92,7 +92,7 @@ export default (async () => {
           }
 
           // ---- Descubrimientos recientes (últimos 3) ----
-          const discDir = join(root, ".opencode", "Memoria", "discoveries");
+          const discDir = join(root, "workspec", "Memoria", "discoveries");
           if (existsSync(discDir)) {
             const files = readdirSync(discDir)
               .filter((f) => f.endsWith(".md"))

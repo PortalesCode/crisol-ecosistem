@@ -1,53 +1,23 @@
 # Plan Activo
 
 ## Intención
-
-Centralizar timestamps en plan.md, eliminar task-log, auto-crear plan.md en start-session.
+Proxima sesion: poblar skill-library y pushear a remoto
 
 ---
 
 ## Fases
 
-### Fase 1: Refactor _plan-utils.ts
-
-- [x] `addTaskToLatestPhase` con timestamp de creación
-- [x] `updateTaskStatus` devuelve índice de línea modificada
-- [x] Exportar helper `now()` para timestamp centralizado
-
-### Fase 2: Refactor task-init y task-closeout
-
-- [x] task-init: sacar task-log, escribir timestamp en plan.md
-- [x] task-closeout: sacar task-log, cerrar con timestamp en plan.md
-
-### Fase 3: Verificar compatibilidad
-
-- [x] plan-read, plan-sync, plan-archive: compatible (usan parsePlan)
-- [x] status: compatible (usa parsePlan)
-- [x] inject-summary: descripciones actualizadas
-
-### Fase 4: Documentación y cleanup
-
-- [x] AGENTS.md, North.md: tool descriptions actualizadas
-- [x] .opencode/README.md: task-log eliminado del árbol
-- [x] task-log/ borrado del disco
-
-### Fase 5: Test end-to-end
-
-- [ ] Crear tarea con timestamp — requiere reinicio OpenCode
-- [ ] Cerrar tarea con timestamp — requiere reinicio OpenCode
-- [ ] start_session auto-crea plan.md — requiere reinicio OpenCode
+### Fase 1: Por definir
+- [ ] _primera tarea_
 
 ---
 
 ## Dependencias
 
-- Fase 1 → Fase 2 → Fase 3 → Fase 4 → Fase 5 (secuencial)
+-
 
 ---
 
 ## Notas
 
-- Los timestamps van dentro de la línea de la tarea: `(creada: YYYY-MM-DD HH:mm, cerrada: YYYY-MM-DD HH:mm)`
-- task-log eliminado. Timestamps en plan.md: `(creada: ...)` y `(cerrada: ...)`
-- start_session ahora crea plan.md si no existe (template hardcodeado)
-- Todo requiere reinicio de OpenCode para que los plugins nuevos tomen efecto
+-

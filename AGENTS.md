@@ -89,9 +89,9 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 | `econative_plan_sync` | Sincroniza todowrite ↔ plan.md: `to-todo` carga el plan, `to-plan` persiste cambios |
 | `econative_plan_archive` | Archiva plan completado a `workspec/plans/old/` con timestamp y crea nuevo plan.md vacío |
 | `econative_status` | Vista unificada del proyecto: contexto + plan + stack + descubrimientos en un solo reporte |
-| `econative_save_preferences` | Guarda nombre e idioma del usuario en Memoria/preferences-user/ |
+| `econative_save_preferences` | Guarda nombre e idioma del usuario en workspec/Memoria/preferences-user/ |
 | `econative_stack_snapshot` | Escanea stack, escribe current.json y archiva snapshots viejos |
-| `econative_remember_it` | Guarda descubrimiento en Memoria/discoveries/ con título, descripción, contenido, tags, importancia y estado |
+| `econative_remember_it` | Guarda descubrimiento en workspec/Memoria/discoveries/ con título, descripción, contenido, tags, importancia y estado |
 | `econative_remember_list` | Lista descubrimientos — solo metadata (título, descripción, tags, importancia, fecha, estado). Sin contenido |
 | `econative_remember_show` | Lee el contenido COMPLETO de un descubrimiento por nombre de archivo |
 | `econative_task_init` | Registra tarea con timestamp en plan.md |
@@ -136,16 +136,16 @@ Si detecta un **patrón operativo repetitivo**, sugiere crear una skill en vez d
 | `workspec/context/ARCHITECTURE.md` | Arquitectura actual | North |
 | `workspec/context/STATUS.md` | Estado actual, pendientes, issues | North |
 
-## Memoria del ecosistema
+## Memoria del proyecto
 
-> La memoria vive dentro de `.opencode/Memoria/` — no en la raíz. Es la memoria operativa del ecosistema, no el estado del proyecto.
+> La memoria operativa del ecosistema vive dentro de `workspec/Memoria/` — en la raíz del proyecto, fuera del ecosistema.
 
 | Ruta | Propósito | Lo escribe |
 |---|---|---|
-| `.opencode/Memoria/preferences-user/config.json` | Preferencias del usuario (nombre, idioma) | North via tool |
-| `.opencode/Memoria/stack/current.json` | Snapshot actual del stack | North via tool / comando |
-| `.opencode/Memoria/stack/snapshots-old/` | Snapshots anteriores del stack | Tool automático |
-| `.opencode/Memoria/discoveries/` | Descubrimientos y recuerdos compartidos (fecha, tags, importancia) | North via tool / comando |
+| `workspec/Memoria/preferences-user/config.json` | Preferencias del usuario (nombre, idioma) | North via tool |
+| `workspec/Memoria/stack/current.json` | Snapshot actual del stack | North via tool / comando |
+| `workspec/Memoria/stack/snapshots-old/` | Snapshots anteriores del stack | Tool automático |
+| `workspec/Memoria/discoveries/` | Descubrimientos y recuerdos compartidos (fecha, tags, importancia) | North via tool / comando |
 
 ## Flujo de inicio de sesión
 
@@ -213,7 +213,7 @@ Engram y las tools econativas (`econative_remember_*`) son complementarias, no r
 | Situación | Engram (`mem_save`) | Econativa (`remember_it`) |
 |---|---|---|
 | **¿Quién lo gatilla?** | Automático (session_summary) y North cuando decide | North cuando decide |
-| **¿Dónde vive?** | SQLite en `~/.config/opencode/` (invisible) | Markdown en `.opencode/Memoria/discoveries/` (visible en el repo) |
+| **¿Dónde vive?** | SQLite en `~/.config/opencode/` (invisible) | Markdown en `workspec/Memoria/discoveries/` (visible en el repo) |
 | **¿Quién lo ve?** | Solo los agentes | Cualquier developer que abra el repo |
 | **¿Para qué sirve?** | Memoria operativa entre sesiones: "qué estábamos haciendo", decisiones de arquitectura | Trazabilidad del proyecto: "esto es importante saber", descubrimientos, configuraciones no obvias |
 | **¿Persiste entre sesiones?** | ✅ Sí | ✅ Sí |

@@ -13,7 +13,7 @@ export default (async () => {
           name: tool.schema.string().describe("Nombre del archivo (slug) — obtenelo de remember_list"),
         },
         async execute(args, context) {
-          const discoveriesDir = join(context.directory, ".opencode", "Memoria", "discoveries");
+          const discoveriesDir = join(context.directory, "workspec", "Memoria", "discoveries");
 
           if (!existsSync(discoveriesDir)) {
             return JSON.stringify({ ok: false, error: "No hay descubrimientos guardados" });

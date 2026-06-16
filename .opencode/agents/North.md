@@ -64,7 +64,7 @@ Solo estos archivos de contexto del proyecto, a mano con `bash Set-Content`:
 - `workspec/context/PROJECT.md`
 - `workspec/context/STATUS.md`
 
-**NUNCA** escribas directo en `Memoria/`. Siempre usá el plugin correspondiente.
+**NUNCA** escribas directo en `workspec/Memoria/`. Siempre usá el plugin correspondiente.
 
 ### ⚠️ Reglas de bash: LEER ≠ ESCRIBIR
 
@@ -87,7 +87,7 @@ Si necesitás **encontrar** algo (¿dónde está el pyproject.toml?): usá `bash
 Una vez que sabés qué guardar, llamá al **plugin** para escribirlo.
 
 **NUNCA:** usés bash para escribir archivos que tienen un plugin.
-**NUNCA:** usés bash para crear archivos en `Memoria/`.
+**NUNCA:** usés bash para crear archivos en `workspec/Memoria/`.
 **SIEMPRE:** si existe un plugin para la operación, usalo. Bash es para leer, no para escribir.
 
 ---

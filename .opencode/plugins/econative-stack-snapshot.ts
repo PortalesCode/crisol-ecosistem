@@ -1616,14 +1616,14 @@ export default (async () => {
           + "Vite, Webpack, Rollup, Tailwind, ESLint, Prettier, Babel, "
           + "Nx, Turborepo, Lerna, Prisma, Nix, y más. "
           + "Parsea cada manifiesto para extraer nombre, versión, framework, dependencias y herramientas. "
-          + "Guarda snapshot en .opencode/Memoria/stack/current.json con formato JSON estándar. "
+           + "Guarda snapshot en workspec/Memoria/stack/current.json con formato JSON estándar. "
           + "Acepta 'path' opcional para escanear subdirectorios.",
         args: {
           path: tool.schema.string().optional()
             .describe("Ruta relativa al proyecto. Si se omite, escanea la raíz. Ej: 'md-toc' escanea md-toc/"),
         },
         async execute(args, context) {
-          const stackDir = join(context.directory, ".opencode", "Memoria", "stack");
+          const stackDir = join(context.directory, "workspec", "Memoria", "stack");
           const snapshotsDir = join(stackDir, "snapshots-old");
           if (!existsSync(stackDir)) mkdirSync(stackDir, { recursive: true });
           if (!existsSync(snapshotsDir)) mkdirSync(snapshotsDir, { recursive: true });
