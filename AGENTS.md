@@ -6,7 +6,7 @@
 
 ## ⚙️ Manifiesto del proyecto
 
-Completá esta sección con lo que tu proyecto necesite. El agente lo consulta al inicio para saber qué tenés disponible.
+North actualiza esta sección automáticamente. Consultala para saber qué skills, dominios y MCPs están disponibles.
 
 ### Skills externas
 
@@ -22,23 +22,25 @@ Ejemplo:
     └── Skill.md
 ```
 
-Listá las skills que hayas agregado:
+North las registra acá automáticamente al instalarlas con `econative-skill-installer`.
 
-- _(completar)_
+- _(sin skills externas instaladas)_
 
 ### Dominios del proyecto
 
 Dominios curados en `.opencode/domains/` además del `_template.md` de referencia.
 Se consultan bajo demanda con `econative_domain_list` / `econative_domain_reader`.
 
-- _(completar)_
+North los registra acá automáticamente al curarlos con `econative-curacion-dominios`.
+
+- _(sin dominios curados aún)_
 
 ### MCPs del proyecto
 
 MCPs configurados en `opencode.json` además del `seq-thinking` nativo del ecosistema.
 Si agregás un MCP global, listalo igual para que el agente sepa que está disponible.
 
-- _(completar)_
+- _(sin MCPs adicionales configurados)_
 
 ---
 

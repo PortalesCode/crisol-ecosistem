@@ -16,14 +16,26 @@ Instala skills bajo demanda desde un repositorio remoto. Requiere reinicio de Op
 - Descarga `<URL>/<skill>/SKILL.md` (y archivos adicionales si existen)
 - Escribe los archivos en `.opencode/skills/extern/<skill>/`
 
-### 3. OpenCode descubre la skill
+### 3. Actualizar AGENTS.md
+- Abrir `AGENTS.md` (raíz del proyecto)
+- Buscar la sección `### Skills externas` dentro del `## ⚙️ Manifiesto del proyecto`
+- Agregar la skill instalada como un ítem de lista con formato: `- **<skill-name>**: <descripción>`
+- Reemplazar `- _(completar)_` si existe, o agregar después del último ítem
+- Ejemplo: si instalaste "playwright-expert", que quede así:
+  ```
+  ### Skills externas
+  - **playwright-expert**: E2E testing with Playwright
+  ```
+
+### 4. OpenCode descubre la skill
 - Al reiniciar runtime o en el próximo scan, OpenCode detecta la nueva skill en `skills/extern/`
 - Aparece en `<available_skills>` con su nombre y descripción
 - Los agentes pueden cargarla con `skill("<nombre>")`
 
-### 4. Si ya está instalada
+### 5. Si ya está instalada
 - Verificar si hace falta actualizarla (comparar versión local vs remota si existe)
 - Si no, usar la que ya está instalada
+- Si se actualiza, también actualizar la descripción en AGENTS.md si cambió
 
 ## Formato del repositorio remoto
 
@@ -59,3 +71,4 @@ https://raw.githubusercontent.com/PortalesCode/skill-library/main/
 4. Si la skill remota no existe en el index, North informa y no crea archivos vacíos
 5. La URL del registro se lee de `workspec/context/SKILL-REGISTRY.md`, no está hardcodeada
 6. **Las skills instaladas NO están disponibles hasta reiniciar OpenCode.** OpenCode escanea las skills al inicio de sesión. Después de instalar una skill con esta herramienta, North debe informar al usuario: "Skill instalada. Necesitás reiniciar OpenCode para que esté disponible." La skill estará lista en la próxima sesión.
+7. **Siempre actualizar AGENTS.md** después de instalar o actualizar una skill. Si AGENTS.md no refleja las skills instaladas, los agentes no saben que existen.
