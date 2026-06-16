@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
+import { parsePlan, updateTaskStatus } from "./_plan-utils.js";
 
 export default (async () => {
   return {
@@ -33,55 +34,35 @@ export default (async () => {
           }
 
           const content = readFileSync(planPath, "utf-8");
-          const lines = content.split("\n");
 
           if (args.direction === "to-todo") {
-            // Extraer todas las tareas con su estado para todowrite
-            const tasks: { text: string; completed: boolean; phase: string }[] = [];
-            let currentPhase = "General";
+            try {
+              const planData = parsePlan(content);
+              let todoMarkdown = "## Plan Activo — Cargado desde plan.md\n\n";
 
-            for (const line of lines) {
-              const trimmed = line.trim();
-              if (trimmed.startsWith("### ")) {
-                currentPhase = trimmed.replace("### ", "").replace("**", "").replace("**", "").trim();
-              } else if (trimmed.startsWith("- [ ] ")) {
-                tasks.push({
-                  text: trimmed.replace("- [ ] ", "").replace(" 🔵", "").trim(),
-                  completed: false,
-                  phase: currentPhase,
-                });
-              } else if (trimmed.startsWith("- [x] ")) {
-                const taskText = trimmed.replace("- [x] ", "").replace(" 🔵", "").replace(" ❌", "").trim();
-                tasks.push({
-                  text: taskText,
-                  completed: true,
-                  phase: currentPhase,
-                });
+              for (const phase of planData.phases) {
+                todoMarkdown += `### ${phase.name}\n`;
+                for (const task of phase.tasks) {
+                  todoMarkdown += `- [${task.completed ? "x" : " "}] ${task.text}\n`;
+                }
               }
+
+              todoMarkdown += `\n---\nTotal: ${planData.stats.totalTasks} tareas (${planData.stats.completedTasks} completadas)`;
+
+              return JSON.stringify({
+                ok: true,
+                direction: "to-todo",
+                tasks_count: planData.stats.totalTasks,
+                completed_count: planData.stats.completedTasks,
+                todo_format: todoMarkdown,
+                message: "Copiá el contenido de 'todo_format' en todowrite para cargar el plan.",
+              });
+            } catch (err) {
+              return JSON.stringify({
+                ok: false,
+                error: `Error al parsear plan.md: ${err instanceof Error ? err.message : String(err)}`,
+              });
             }
-
-            // Generar formato todowrite-ready
-            let todoMarkdown = "## Plan Activo — Cargado desde plan.md\n\n";
-            let currentPhaseForOutput = "";
-
-            for (const task of tasks) {
-              if (task.phase !== currentPhaseForOutput) {
-                currentPhaseForOutput = task.phase;
-                todoMarkdown += `### ${task.phase}\n`;
-              }
-              todoMarkdown += `- [${task.completed ? "x" : " "}] ${task.text}\n`;
-            }
-
-            todoMarkdown += `\n---\nTotal: ${tasks.length} tareas (${tasks.filter((t) => t.completed).length} completadas)`;
-
-            return JSON.stringify({
-              ok: true,
-              direction: "to-todo",
-              tasks_count: tasks.length,
-              completed_count: tasks.filter((t) => t.completed).length,
-              todo_format: todoMarkdown,
-              message: "Copiá el contenido de 'todo_format' en todowrite para cargar el plan.",
-            });
           }
 
           if (args.direction === "to-plan") {
@@ -100,36 +81,21 @@ export default (async () => {
               return JSON.stringify({ ok: false, error: "'tasks' debe ser un array" });
             }
 
+            let lines = content.split("\n");
             let changed = false;
             let found = 0;
             const notFound: string[] = [];
 
             for (const update of updates) {
-              let taskFound = false;
-              for (let i = 0; i < lines.length; i++) {
-                const line = lines[i];
-                const cleanLine = line.replace(" 🔵", "").replace(" ❌", "").trim();
-                if (
-                  (cleanLine.startsWith("- [ ] ") || cleanLine.startsWith("- [x] ")) &&
-                  (cleanLine.includes(update.name) || cleanLine.toLowerCase().includes(update.name.toLowerCase()))
-                ) {
-                  taskFound = true;
-                  found++;
+              const validStatuses = ["completed", "pending", "cancelled"];
+              const status = validStatuses.includes(update.status) ? update.status as "completed" | "pending" | "cancelled" : "completed";
 
-                  if (update.status === "completed" && cleanLine.startsWith("- [ ] ")) {
-                    lines[i] = line.replace("- [ ] ", "- [x] ").replace(" 🔵", "");
-                    changed = true;
-                  } else if (update.status === "pending" && cleanLine.startsWith("- [x] ")) {
-                    lines[i] = line.replace("- [x] ", "- [ ] ").replace(" ❌", "");
-                    changed = true;
-                  } else if (update.status === "cancelled" && cleanLine.startsWith("- [ ] ")) {
-                    lines[i] = line.replace("- [ ] ", "- [x] ").replace(" 🔵", "") + " ❌";
-                    changed = true;
-                  }
-                  break;
-                }
-              }
-              if (!taskFound) {
+              const result = updateTaskStatus(lines, update.name, status);
+              if (result.found) {
+                found++;
+                lines = result.lines;
+                changed = true;
+              } else {
                 notFound.push(update.name);
               }
             }

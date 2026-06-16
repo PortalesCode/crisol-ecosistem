@@ -2,6 +2,7 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync } from "fs";
 import { join } from "path";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
+import { updateTaskStatus, addTaskToLatestPhase } from "./_plan-utils.js";
 
 export default (async () => {
   return {
@@ -38,69 +39,56 @@ export default (async () => {
           log.push(task);
           writeFileSync(logFile, JSON.stringify(log, null, 2), "utf-8");
 
-          // ---- Marcar en plan.md ----
+          // ---- Sincronizar con plan.md ----
           const planPath = join(context.directory, "workspec", "plans", "active", "plan.md");
           let planUpdated = false;
-          let taskAdded = false;
+          let taskAddedToPlan = false;
 
           if (existsSync(planPath)) {
             const content = readFileSync(planPath, "utf-8");
-            const lines = content.split("\n");
-            let changed = false;
-            let found = false;
+            let lines = content.split("\n");
 
-            // Paso 1: buscar la tarea por nombre y marcarla como 🔵
-            for (let i = 0; i < lines.length; i++) {
-              const line = lines[i];
-              const cleanLine = line.replace(" 🔵", "").replace(" ❌", "").trim();
-              if (
-                (cleanLine.startsWith("- [ ] ") || cleanLine.startsWith("- [x] ")) &&
-                (cleanLine.includes(args.name) || cleanLine.toLowerCase().includes(args.description?.toLowerCase()?.slice(0, 30) || ""))
-              ) {
-                found = true;
-                if (line.includes("- [ ]") && !line.includes("[x]")) {
-                  lines[i] = line.replace("- [ ] ", "- [ ] 🔵 ").replace(" 🔵 🔵", " 🔵");
-                  changed = true;
-                }
-                break;
-              }
+            // Buscar por name primero, después por description
+            const searchText = args.description && args.description.length > 5
+              ? args.description.slice(0, 40)
+              : args.name;
+
+            let result = updateTaskStatus(lines, searchText, "pending");
+            // Si no encontró por description, buscar por name exacto
+            if (!result.found && searchText !== args.name) {
+              result = updateTaskStatus(lines, args.name, "pending");
             }
 
-            // Paso 2: si no se encontró, agregarla a la última fase
-            if (!found) {
-              let lastPhaseIdx = -1;
+            if (result.found) {
+              // Ya existe, marcar como 🔵
+              const markResult = updateTaskStatus(result.lines, searchText, "pending");
+              lines = markResult.lines;
+              // Agregar 🔵 manualmente después del update
               for (let i = 0; i < lines.length; i++) {
-                if (lines[i].trim().startsWith("### ")) {
-                  lastPhaseIdx = i;
+                if (lines[i].includes(args.name) && lines[i].includes("- [ ]") && !lines[i].includes("🔵")) {
+                  lines[i] = lines[i].replace("- [ ] ", "- [ ] 🔵 ");
+                  break;
                 }
               }
-
-              if (lastPhaseIdx >= 0) {
-                // Encontrar el final de la última fase (próximo ## o ### o fin del archivo)
-                let insertIdx = lines.length;
-                for (let i = lastPhaseIdx + 1; i < lines.length; i++) {
-                  if (lines[i].trim().startsWith("## ") || (lines[i].trim().startsWith("### ") && i !== lastPhaseIdx)) {
-                    insertIdx = i;
-                    break;
-                  }
-                }
-                // Insertar tarea antes del insertIdx
-                const descText = args.description ? ` — ${args.description}` : "";
-                lines.splice(insertIdx, 0, `- [ ] 🔵 ${args.name}${descText}`);
-                changed = true;
-                taskAdded = true;
+              planUpdated = true;
+            } else {
+              // No existe, agregar a la última fase
+              const addResult = addTaskToLatestPhase(lines, args.name, args.description);
+              if (addResult.added) {
+                lines = addResult.lines;
+                planUpdated = true;
+                taskAddedToPlan = true;
               }
             }
 
-            if (changed) {
+            if (planUpdated) {
               writeFileSync(planPath, lines.join("\n"), "utf-8");
-              planUpdated = true;
             }
           }
 
           const result: Record<string, unknown> = { ok: true, task, active_tasks: log.length };
           if (planUpdated) result.plan_updated = true;
-          if (taskAdded) result.task_added_to_plan = true;
+          if (taskAddedToPlan) result.task_added_to_plan = true;
           return JSON.stringify(result);
         },
       }),

@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, renameSync, existsSync, mkdirSync } from "
 import { join } from "path";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
+import { parsePlan } from "./_plan-utils.js";
 
 export default (async () => {
   return {
@@ -19,7 +20,6 @@ export default (async () => {
           const oldDir = join(context.directory, "workspec", "plans", "old");
           const planPath = join(activeDir, "plan.md");
 
-          // Verificar que exista plan activo
           if (!existsSync(planPath)) {
             return JSON.stringify({
               ok: false,
@@ -27,57 +27,44 @@ export default (async () => {
             });
           }
 
-          // Leer el plan actual
           const content = readFileSync(planPath, "utf-8");
 
-          // Generar timestamp para el nombre del archivo
+          // Timestamp
           const now = new Date();
           const pad = (n: number) => n.toString().padStart(2, "0");
           const timestamp = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}-${pad(now.getHours())}${pad(now.getMinutes())}`;
           const archiveName = `plan-${timestamp}.md`;
           const archivePath = join(oldDir, archiveName);
 
-          // Asegurar que old/ exista
-          if (!existsSync(oldDir)) {
-            mkdirSync(oldDir, { recursive: true });
-          }
+          if (!existsSync(oldDir)) mkdirSync(oldDir, { recursive: true });
 
-          // Archivar: mover plan.md → old/
           renameSync(planPath, archivePath);
 
-          // Extraer metadata del plan archivado para el reporte
-          const lines = content.split("\n");
-          let intention = "";
-          let completedTasks = 0;
-          let totalTasks = 0;
-
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed.startsWith("- [x] ")) completedTasks++;
-            if (trimmed.startsWith("- [ ] ") || trimmed.startsWith("- [x] ")) totalTasks++;
-            // Capturar intención (primera línea no-vacía después de ## Intención)
-            if (intention === "") {
-              const idx = lines.indexOf("## Intención");
-              if (idx >= 0) {
-                for (let i = idx + 1; i < lines.length; i++) {
-                  const t = lines[i].trim();
-                  if (t && !t.startsWith("#") && !t.startsWith("-") && !t.startsWith("---")) {
-                    intention = t;
-                    break;
-                  }
-                }
-              }
-            }
+          // Extraer métricas del plan archivado via plan-utils
+          let archivedStats = { intention: "(no especificada)", completed_tasks: 0, total_tasks: 0, progress: "0%" };
+          try {
+            const planData = parsePlan(content);
+            archivedStats = {
+              intention: planData.intention || "(no especificada)",
+              completed_tasks: planData.stats.completedTasks,
+              total_tasks: planData.stats.totalTasks,
+              progress: `${planData.stats.progressPercent}%`,
+            };
+          } catch {
+            // Si falla el parseo, usar métricas básicas
+            const completedTasks = (content.match(/- \[x\]/g) || []).length;
+            const totalTasks = (content.match(/- \[[ x]\]/g) || []).length;
+            archivedStats = {
+              intention: "(extracción falló)",
+              completed_tasks: completedTasks,
+              total_tasks: totalTasks,
+              progress: totalTasks > 0 ? `${Math.round((completedTasks / totalTasks) * 100)}%` : "0%",
+            };
           }
 
           // Crear nuevo plan.md vacío
           let newPlan = "# Plan Activo\n\n## Intención\n";
-          if (args.new_intention) {
-            newPlan += args.new_intention;
-          } else {
-            newPlan += "_pendiente — definir en la próxima sesión_";
-          }
-
+          newPlan += args.new_intention || "_pendiente — definir en la próxima sesión_";
           newPlan += "\n\n---\n\n## Fases\n\n### Fase 1: Por definir\n- [ ] _primera tarea_\n\n---\n\n## Dependencias\n\n-\n\n---\n\n## Notas\n\n-\n";
 
           writeFileSync(planPath, newPlan, "utf-8");
@@ -86,10 +73,7 @@ export default (async () => {
             ok: true,
             archived: {
               file: archiveName,
-              intention: intention || "(no especificada)",
-              completed_tasks: completedTasks,
-              total_tasks: totalTasks,
-              progress: totalTasks > 0 ? `${Math.round((completedTasks / totalTasks) * 100)}%` : "0%",
+              ...archivedStats,
             },
             new_plan: {
               intention: args.new_intention || "_pendiente_",

@@ -1,7 +1,7 @@
 # econative-skill-installer
 
 ## description
-Instala skills bajo demanda desde un repositorio remoto. North la usa cuando detecta que una skill externa es necesaria para la tarea actual. No descarga todo el catálogo, solo la skill específica. Compatible con caching local.
+Instala skills bajo demanda desde un repositorio remoto. Requiere reinicio de OpenCode para que la skill instalada esté disponible. North la usa cuando detecta que una skill externa es necesaria para la tarea actual. No descarga todo el catálogo, solo la skill específica. Compatible con caching local.
 
 ## Pipeline
 
@@ -58,3 +58,4 @@ https://raw.githubusercontent.com/PortalesCode/skill-library/main/
 3. Si la descarga falla, North debe informar al usuario y continuar sin la skill
 4. Si la skill remota no existe en el index, North informa y no crea archivos vacíos
 5. La URL del registro se lee de `workspec/context/SKILL-REGISTRY.md`, no está hardcodeada
+6. **Las skills instaladas NO están disponibles hasta reiniciar OpenCode.** OpenCode escanea las skills al inicio de sesión. Después de instalar una skill con esta herramienta, North debe informar al usuario: "Skill instalada. Necesitás reiniciar OpenCode para que esté disponible." La skill estará lista en la próxima sesión.

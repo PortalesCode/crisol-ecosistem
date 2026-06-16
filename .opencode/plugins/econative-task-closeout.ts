@@ -2,6 +2,7 @@ import { readFileSync, writeFileSync, existsSync } from "fs";
 import { join } from "path";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
+import { updateTaskStatus, getCompletedPhase } from "./_plan-utils.js";
 
 export default (async () => {
   return {
@@ -19,97 +20,74 @@ export default (async () => {
 
           // ---- Cerrar en task-log ----
           const logFile = join(context.directory, ".opencode", "Memoria", "task-log", "active.json");
-          let logResult = { ok: false, error: "No active tasks log found" };
+          let logResult: Record<string, unknown> = { ok: false, error: "No active tasks log found" };
 
           if (existsSync(logFile)) {
-            let log: Record<string, unknown>[] = JSON.parse(readFileSync(logFile, "utf-8"));
-            const taskIdx = log.findIndex((t) => t.name === args.name && t.status === "active");
+            try {
+              const log: Record<string, unknown>[] = JSON.parse(readFileSync(logFile, "utf-8"));
+              const taskIdx = log.findIndex((t) => t.name === args.name && t.status === "active");
 
-            if (taskIdx === -1) {
-              logResult = { ok: false, error: `Task '${args.name}' not found or already closed` };
-            } else {
-              log[taskIdx].status = status;
-              log[taskIdx].closed_at = new Date().toISOString();
-              writeFileSync(logFile, JSON.stringify(log, null, 2), "utf-8");
-              logResult = {
-                ok: true,
-                task: log[taskIdx],
-                still_active: log.filter((t) => t.status === "active").length,
-              };
+              if (taskIdx === -1) {
+                logResult = { ok: false, error: `Task '${args.name}' not found or already closed` };
+              } else {
+                log[taskIdx].status = status;
+                log[taskIdx].closed_at = new Date().toISOString();
+                writeFileSync(logFile, JSON.stringify(log, null, 2), "utf-8");
+                logResult = {
+                  ok: true,
+                  task: log[taskIdx],
+                  still_active: log.filter((t) => t.status === "active").length,
+                };
+              }
+            } catch {
+              logResult = { ok: false, error: "Error al leer task-log" };
             }
           }
 
-          // ---- Actualizar plan.md ----
+          // ---- Actualizar plan.md via plan-utils ----
           const planPath = join(context.directory, "workspec", "plans", "active", "plan.md");
           let planResult: Record<string, unknown> = { plan_updated: false };
-          let phaseCompleted = false;
-          let phaseName = "";
 
           if (existsSync(planPath)) {
-            const content = readFileSync(planPath, "utf-8");
-            const lines = content.split("\n");
-            let changed = false;
+            try {
+              const content = readFileSync(planPath, "utf-8");
+              let lines = content.split("\n");
 
-            for (let i = 0; i < lines.length; i++) {
-              const line = lines[i];
-              // Detectar fase actual
-              if (line.startsWith("### ")) {
-                phaseName = line.replace("### ", "");
-              }
+              const validStatus = (["completed", "pending", "cancelled"].includes(status))
+                ? status as "completed" | "pending" | "cancelled"
+                : "completed";
 
-              // Buscar la tarea por nombre en checkbox (activa o completada)
-              if ((line.includes("- [ ] ") || line.includes("- [x] ")) && line.includes(args.name)) {
-                const clean = line.replace(" 🔵", "");
-                if (status === "completed") {
-                  lines[i] = clean.replace("- [ ] ", "- [x] ").replace("- [x] ", "- [x] ");
-                } else {
-                  // cancelled: lo marcamos como cancelado
-                  lines[i] = clean.replace("- [ ] ", "- [x] ❌ ").replace("- [x] ", "- [x] ");
-                }
-                changed = true;
-                break;
-              }
-            }
+              const result = updateTaskStatus(lines, args.name, validStatus);
 
-            if (changed) {
-              // Verificar si la fase actual se completó
-              let inPhase = false;
-              let allDone = true;
-              let hasTasks = false;
+              if (result.found) {
+                lines = result.lines;
+                writeFileSync(planPath, lines.join("\n"), "utf-8");
 
-              for (const line of lines) {
-                if (line.startsWith("### ") && line.includes(phaseName)) {
-                  inPhase = true;
-                  continue;
-                }
-                if (inPhase && line.startsWith("### ")) break; // siguiente fase
-                if (inPhase && line.includes("- [ ] ")) {
-                  // Ignorar las canceladas (❌)
-                  if (!line.includes("❌")) {
-                    allDone = false;
+                // Detectar si se completó una fase
+                let phaseCompleted = false;
+                let phaseName = "";
+                try {
+                  const completed = getCompletedPhase(lines);
+                  if (completed) {
+                    phaseCompleted = true;
+                    phaseName = completed.phaseName;
                   }
-                  hasTasks = true;
-                }
+                } catch { /* si falla la detección, ignoramos */ }
+
+                planResult = {
+                  plan_updated: true,
+                  phase_completed: phaseCompleted,
+                  phase_name: phaseCompleted ? phaseName : undefined,
+                };
+              } else {
+                planResult = { plan_updated: false, warning: `Tarea '${args.name}' no encontrada en plan.md` };
               }
-
-              if (inPhase && hasTasks && allDone) {
-                phaseCompleted = true;
-              }
-
-              writeFileSync(planPath, lines.join("\n"), "utf-8");
-
-              planResult = {
-                plan_updated: true,
-                phase_completed: phaseCompleted,
-                phase_name: phaseCompleted ? phaseName : undefined,
-              };
+            } catch {
+              planResult = { plan_updated: false, error: "Error al actualizar plan.md" };
             }
           }
 
-          return JSON.stringify({
-            ...logResult,
-            ...planResult,
-          });
+          return JSON.stringify({ ...logResult, ...planResult });
         },
       }),
     },

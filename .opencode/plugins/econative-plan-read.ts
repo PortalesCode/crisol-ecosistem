@@ -2,6 +2,7 @@ import { readFileSync, existsSync } from "fs";
 import { join } from "path";
 import { tool } from "@opencode-ai/plugin";
 import type { Plugin } from "@opencode-ai/plugin";
+import { parsePlan, formatPlanSummary } from "./_plan-utils.js";
 
 export default (async () => {
   return {
@@ -24,111 +25,28 @@ export default (async () => {
           }
 
           const content = readFileSync(planPath, "utf-8");
-          const lines = content.split("\n");
 
-          // Extraer intención (primera línea después de # Plan Activo y ## Intención)
-          let intention = "";
-          const phases: { name: string; tasks: { text: string; completed: boolean }[] }[] = [];
-          let dependencies = "";
-          let notes = "";
-          let currentSection = "";
-          let currentPhase = "";
+          try {
+            const planData = parsePlan(content);
+            const summary = formatPlanSummary(planData);
 
-          for (const line of lines) {
-            const trimmed = line.trim();
-
-            if (trimmed.startsWith("## Intención")) {
-              currentSection = "intention";
-              continue;
-            }
-            if (trimmed.startsWith("## Fases") || trimmed.startsWith("### Fases")) {
-              currentSection = "phases";
-              continue;
-            }
-            if (trimmed.startsWith("## Dependencias") || trimmed.startsWith("### Dependencias")) {
-              currentSection = "dependencies";
-              continue;
-            }
-            if (trimmed.startsWith("## Notas") || trimmed.startsWith("### Notas")) {
-              currentSection = "notes";
-              continue;
-            }
-
-            if (currentSection === "intention" && trimmed && !trimmed.startsWith("#") && !trimmed.startsWith("---")) {
-              intention = trimmed;
-              currentSection = "";
-              continue;
-            }
-
-            if (currentSection === "phases") {
-              if (trimmed.startsWith("### ")) {
-                currentPhase = trimmed.replace("### ", "").replace("**", "").replace("**", "");
-                phases.push({ name: currentPhase, tasks: [] });
-              } else if (trimmed.startsWith("- [ ]")) {
-                if (phases.length > 0) {
-                  phases[phases.length - 1].tasks.push({
-                    text: trimmed.replace("- [ ]", "").trim(),
-                    completed: false,
-                  });
-                }
-              } else if (trimmed.startsWith("- [x]")) {
-                if (phases.length > 0) {
-                  phases[phases.length - 1].tasks.push({
-                    text: trimmed.replace("- [x]", "").trim(),
-                    completed: true,
-                  });
-                }
-              }
-              continue;
-            }
-
-            if (currentSection === "dependencies" && trimmed && !trimmed.startsWith("#")) {
-              dependencies += (dependencies ? "\n" : "") + trimmed;
-              continue;
-            }
-
-            if (currentSection === "notes" && trimmed && !trimmed.startsWith("#")) {
-              notes += (notes ? "\n" : "") + trimmed;
-            }
+            return JSON.stringify({
+              ok: true,
+              exists: true,
+              intention: planData.intention,
+              phases: planData.phases,
+              dependencies: planData.dependencies,
+              notes: planData.notes,
+              stats: planData.stats,
+              summary,
+            }, null, 2);
+          } catch (err) {
+            return JSON.stringify({
+              ok: false,
+              exists: true,
+              error: `Error al parsear plan.md: ${err instanceof Error ? err.message : String(err)}`,
+            });
           }
-
-          // Construir summary humano
-          const totalTasks = phases.reduce((acc, p) => acc + p.tasks.length, 0);
-          const completedTasks = phases.reduce((acc, p) => acc + p.tasks.filter((t) => t.completed).length, 0);
-
-          let summary = `📋 ${intention || "Plan activo"}\n\n`;
-          for (const phase of phases) {
-            const done = phase.tasks.filter((t) => t.completed).length;
-            summary += `▸ ${phase.name} (${done}/${phase.tasks.length})\n`;
-            for (const task of phase.tasks) {
-              summary += `  ${task.completed ? "✅" : "⬜"} ${task.text}\n`;
-            }
-            summary += "\n";
-          }
-
-          if (dependencies) {
-            summary += `🔗 Dependencias: ${dependencies}\n\n`;
-          }
-          if (notes) {
-            summary += `📝 Notas: ${notes}\n`;
-          }
-
-          summary += `\nProgreso: ${completedTasks}/${totalTasks} tareas completadas`;
-
-          return JSON.stringify({
-            ok: true,
-            exists: true,
-            intention,
-            phases,
-            dependencies,
-            notes,
-            stats: {
-              totalTasks,
-              completedTasks,
-              progressPercent: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
-            },
-            summary,
-          }, null, 2);
         },
       }),
     },

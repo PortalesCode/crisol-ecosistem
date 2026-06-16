@@ -192,6 +192,7 @@ Antes de planificar, revisar arquitectura o decidir paralelismo, **cargá la ski
 | `econative_plan_read` | Consultar el plan activo: intención, fases, tareas y progreso desde `workspec/plans/active/plan.md` |
 | `econative_plan_sync` | Sincronizar todowrite ↔ plan.md: 'to-todo' carga el plan en todowrite, 'to-plan' persiste cambios al plan.md |
 | `econative_plan_archive` | Archivar plan completado a workspec/plans/old/ y crear nuevo plan.md vacío |
+| `econative_status` | Vista unificada del proyecto: contexto + plan + stack + descubrimientos en un solo reporte |
 | `econative_save_preferences` | Post-onboarding o cambio de preferencias |
 | `econative_stack_snapshot` | Usuario pide scan-stack o cambios grandes |
 | `econative_remember_it` | Encontraste algo no obvio que vale la pena guardar |
