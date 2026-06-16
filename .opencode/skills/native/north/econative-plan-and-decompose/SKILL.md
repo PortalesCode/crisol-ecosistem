@@ -20,10 +20,8 @@ description: Transforma una intención en un plan estructurado con fases, tareas
 
 ```
 1. Ejecutar `econative_plan_read` para cargar el plan activo desde workspec/plans/active/plan.md
-2. ¿Hay un plan con fases/tareas?
-   ├── Sí → Plasmar en todowrite (reflejo en vivo)
-   │        "Acá retomamos: [intención], fase [X], tareas pendientes: [lista]"
-   └── No → Esperar intención del usuario (Fase 1)
+2. Ejecutar `econative_plan_sync` direction: "to-todo" para generar el formato todowrite
+3. Copiar el `todo_format` generado en todowrite (reflejo en vivo)
 ```
 
 ### Fase 1: Descomposición (existente)
@@ -52,27 +50,25 @@ Orden — secuencia vs paralelo
 ### Fase 3: Durante la sesión — Sync
 
 ```
-Cada vez que se actualiza todowrite:
-├── ¿Cambio significativo? (completar tarea, agregar subtarea)
-│   └── Actualizar plan.md para reflejar el estado actual
-│
+¿Se completó/actualizó una tarea en todowrite?
+├── Ejecutar `econative_plan_sync` direction: "to-plan" con las tareas actualizadas
+│   └── Esto persiste los cambios a plan.md (checkpoint)
+
 ¿Antes de operación de riesgo? (task(), bash crítico)
-└── Sync plan.md primero (checkpoint)
+└── Sync "to-plan" primero (checkpoint)
 
 ¿Se completó una fase?
-└── Sync plan.md + actualizar todowrite
+└── Sync "to-plan" + preguntar al usuario si sigue
 ```
 
 ### Fase 4: Archivado — Plan completado
 
 ```
 ¿El plan está completo? (todas las tareas marcadas)
-├── Último sync: todowrite → workspec/plans/active/plan.md
-├── Mover: workspec/plans/active/plan.md
-│        → workspec/plans/old/plan-YYYY-MM-DD-HHmm.md
+├── Último sync: `econative_plan_sync` direction: "to-plan" (checkpoint final)
+├── Ejecutar `econative_plan_archive` para archivar a old/ y crear nuevo plan
 ├── Limpiar todowrite
-├── workspec/plans/active/plan.md queda vacío (o arranca nuevo plan)
-└── Preguntar al usuario: "Plan completado. ¿Arrancamos uno nuevo?"
+└── Preguntar al usuario: "Plan archivado. ¿Arrancamos uno nuevo?"
 ```
 
 ---
@@ -115,6 +111,8 @@ Cada vez que se actualiza todowrite:
 | Tool | Propósito |
 |---|---|
 | `econative_plan_read` | Consultar el plan activo: intención, fases, tareas, progreso |
+| `econative_plan_sync` | Sincronizar todowrite ↔ plan.md (to-todo / to-plan) |
+| `econative_plan_archive` | Archivar plan completado a old/ y crear nuevo |
 | `todowrite` | Reflejo en vivo del plan durante la sesión (efímero) |
 
 ---

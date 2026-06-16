@@ -9,7 +9,8 @@ export default (async () => {
       econative_task_init: tool({
         description:
           "Registra una nueva tarea en el log del sistema y la marca en el plan activo como 'en curso'. "
-          + "Actualiza workspec/plans/active/plan.md si existe la tarea.",
+          + "Si la tarea no existe en el plan, la agrega a la última fase activa. "
+          + "Actualiza workspec/plans/active/plan.md.",
         args: {
           name: tool.schema.string().describe("Nombre corto de la tarea (kebab-case)"),
           description: tool.schema.string().describe("Descripción de la tarea"),
@@ -40,23 +41,54 @@ export default (async () => {
           // ---- Marcar en plan.md ----
           const planPath = join(context.directory, "workspec", "plans", "active", "plan.md");
           let planUpdated = false;
+          let taskAdded = false;
 
           if (existsSync(planPath)) {
             const content = readFileSync(planPath, "utf-8");
             const lines = content.split("\n");
             let changed = false;
+            let found = false;
 
+            // Paso 1: buscar la tarea por nombre y marcarla como 🔵
             for (let i = 0; i < lines.length; i++) {
               const line = lines[i];
-              // Buscar checkbox con el nombre de la tarea (sin importar si tiene 🔵 ya)
-              if ((line.includes("- [ ] ") || line.includes("- [x] ")) && line.includes(args.name)) {
-                // Si ya está completada, no la revertimos
-                if (line.includes("- [x]")) break;
-                // Marcar como activa con indicador visual
-                const clean = line.replace(" 🔵", "");
-                lines[i] = clean.replace("- [ ] ", "- [ ] 🔵 ");
-                changed = true;
+              const cleanLine = line.replace(" 🔵", "").replace(" ❌", "").trim();
+              if (
+                (cleanLine.startsWith("- [ ] ") || cleanLine.startsWith("- [x] ")) &&
+                (cleanLine.includes(args.name) || cleanLine.toLowerCase().includes(args.description?.toLowerCase()?.slice(0, 30) || ""))
+              ) {
+                found = true;
+                if (line.includes("- [ ]") && !line.includes("[x]")) {
+                  lines[i] = line.replace("- [ ] ", "- [ ] 🔵 ").replace(" 🔵 🔵", " 🔵");
+                  changed = true;
+                }
                 break;
+              }
+            }
+
+            // Paso 2: si no se encontró, agregarla a la última fase
+            if (!found) {
+              let lastPhaseIdx = -1;
+              for (let i = 0; i < lines.length; i++) {
+                if (lines[i].trim().startsWith("### ")) {
+                  lastPhaseIdx = i;
+                }
+              }
+
+              if (lastPhaseIdx >= 0) {
+                // Encontrar el final de la última fase (próximo ## o ### o fin del archivo)
+                let insertIdx = lines.length;
+                for (let i = lastPhaseIdx + 1; i < lines.length; i++) {
+                  if (lines[i].trim().startsWith("## ") || (lines[i].trim().startsWith("### ") && i !== lastPhaseIdx)) {
+                    insertIdx = i;
+                    break;
+                  }
+                }
+                // Insertar tarea antes del insertIdx
+                const descText = args.description ? ` — ${args.description}` : "";
+                lines.splice(insertIdx, 0, `- [ ] 🔵 ${args.name}${descText}`);
+                changed = true;
+                taskAdded = true;
               }
             }
 
@@ -68,6 +100,7 @@ export default (async () => {
 
           const result: Record<string, unknown> = { ok: true, task, active_tasks: log.length };
           if (planUpdated) result.plan_updated = true;
+          if (taskAdded) result.task_added_to_plan = true;
           return JSON.stringify(result);
         },
       }),
