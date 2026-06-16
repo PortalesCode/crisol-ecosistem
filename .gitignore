@@ -23,3 +23,6 @@ __pycache__/
 *.pyc
 .env
 .venv/
+
+# Skill library (repo aparte, no se versiona con el proyecto)
+skill-library/
