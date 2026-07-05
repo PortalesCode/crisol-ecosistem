@@ -24,5 +24,8 @@ __pycache__/
 .env
 .venv/
 
-# Plan activo (lo genera el plugin, no se versiona)
-workspec/plans/active/
+# Planes (los genera el plugin — solo trackeamos los .gitkeep)
+workspec/plans/active/*
+!workspec/plans/active/.gitkeep
+workspec/plans/old/*
+!workspec/plans/old/.gitkeep
