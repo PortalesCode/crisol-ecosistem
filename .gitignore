@@ -25,6 +25,7 @@ __pycache__/
 .env
 .venv/
 
-# AGENTS.md desembarcado por start_session
-# ⚠️ Comentá/quita si querés trackear tu propio AGENTS.md
-AGENTS.md
+# Archivos desembarcados por start_session (solo raíz)
+# ⚠️ Comentá/quita si querés trackear los tuyos propios
+/AGENTS.md
+/README.md
