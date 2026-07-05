@@ -24,5 +24,5 @@ __pycache__/
 .env
 .venv/
 
-# Skill library (repo aparte, no se versiona con el proyecto)
-skill-library/
+# Plan activo (lo genera el plugin, no se versiona)
+workspec/plans/active/

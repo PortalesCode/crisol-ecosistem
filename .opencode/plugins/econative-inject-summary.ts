@@ -34,7 +34,6 @@ econative_domain_write — Crear o actualizar dominio
 
 ## ⚡ Skills Nativas (cargar con skill("..."))
 
-econative-plan-and-decompose — Planificar: intención → fases → tareas
 econative-architecture-review — Evaluar arquitectura, impacto, riesgos
 econative-parallel-dispatch — Detectar independencia y lanzar en paralelo
 econative-implement-safe — Implementación segura (Executor)

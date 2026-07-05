@@ -20,7 +20,6 @@ Son **patrones operativos** del ecosistema — definen *cómo trabajan los agent
 
 | Skill | Para qué |
 |---|---|
-| `econative-plan-and-decompose` | Intención → Plan → Fases → Tareas |
 | `econative-architecture-review` | Límites, acoplamiento, flujo, impacto |
 | `econative-parallel-dispatch` | Detectar independencia y lanzar en paralelo |
 | `econative-curacion-dominios` | Curar dominios: detectar gap → investigar → escribir → verificar |

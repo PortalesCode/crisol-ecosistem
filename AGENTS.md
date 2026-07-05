@@ -20,7 +20,7 @@ Ejemplo:
 .opencode/skills/extern/
 └── mi-skill-personalizada/
     └── Skill.md
-```
+```wdq
 
 North las registra acá automáticamente al instalarlas con `econative-skill-installer`.
 
@@ -64,7 +64,6 @@ que la operativa es la misma — solo cambia qué se implementa, debuggea o vali
 
 | Skill | Usada por | Propósito |
 |---|---|---|
-| `native/north/econative-plan-and-decompose` | North | Planificar intención → fases → tareas |
 | `native/north/econative-architecture-review` | North | Revisar arquitectura y detectar riesgos |
 | `native/north/econative-parallel-dispatch` | North | Detectar independencia y lanzar ejecutores paralelos |
 | `native/north/econative-curacion-dominios` | North | Curar dominios: detectar gap, investigar, escribir, verificar |
@@ -85,19 +84,18 @@ Se agregan según necesidad del proyecto — no vienen incluidas por defecto.
 |---|---|
 | `econative_start_session` | **Obligatorio** al inicio. Carga contexto (desde `workspec/context/` en la raíz), memorias, stack, preferences |
 | `econative_context_read` | Lee todos los .md de `workspec/context/` (PROJECT, CONVENTIONS, ARCHITECTURE, STATUS, SKILL-REGISTRY, etc). Sin límite de tamaño. Útil para consultar contexto sin depender de start_session |
-| `econative_plan_read` | Consulta el plan activo desde `workspec/plans/active/plan.md` — intención, fases, tareas, progreso |
-| `econative_plan_sync` | Sincroniza todowrite ↔ plan.md: `to-todo` carga el plan, `to-plan` persiste cambios |
-| `econative_plan_archive` | Archiva plan completado a `workspec/plans/old/` con timestamp y crea nuevo plan.md vacío |
+| `econative_plan` | **Tool única** para gestionar el plan. Acciones: `design`, `start`, `close`, `status`, `archive` |
+| `econative_plan_sync` | Helper: sincroniza todowrite ↔ plan.md: `to-todo` carga el plan, `to-plan` persiste cambios |
+| `econative_plan_archive` | Helper: archiva plan completado a `workspec/plans/old/` con timestamp y crea nuevo plan.md vacío |
 | `econative_status` | Vista unificada del proyecto: contexto + plan + stack + descubrimientos en un solo reporte |
 | `econative_save_preferences` | Guarda nombre e idioma del usuario en workspec/Memoria/preferences-user/ |
 | `econative_stack_snapshot` | Escanea stack, escribe current.json y archiva snapshots viejos |
 | `econative_remember_it` | Guarda descubrimiento en workspec/Memoria/discoveries/ con título, descripción, contenido, tags, importancia y estado |
 | `econative_remember_list` | Lista descubrimientos — solo metadata (título, descripción, tags, importancia, fecha, estado). Sin contenido |
 | `econative_remember_show` | Lee el contenido COMPLETO de un descubrimiento por nombre de archivo |
-| `econative_task_init` | Registra tarea con timestamp en plan.md |
-| `econative_task_closeout` | Marca tarea completada con timestamp de cierre en plan.md |
 | `econative_domain_list` | Escanea workspec/domains/ y devuelve lista de dominios con título y descripción |
 | `econative_domain_reader` | Lee contenido completo de un dominio |
+| `econative_domain_write` | Crea o actualiza dominio |
 
 ## Dominios disponibles
 
@@ -118,7 +116,7 @@ Hay un `_template.md` en `workspec/domains/` con ejemplos de qué va como domini
 ### Responsabilidad
 
 | Quién | Qué hace |
-|---|---|---|
+|---|---|
 | **North** | Cura dominios activamente cuando detecta gaps recurrentes, usando la skill `econative-curacion-dominios`. |
 | **Usuario** | Puede pedir dominios específicos o corregir los curados por North. |
 
@@ -158,13 +156,13 @@ Si detecta un **patrón operativo repetitivo**, sugiere crear una skill en vez d
 
 1. **North** recibe intención del usuario
 2. **North** consulta skills, dominios y contexto
-3. Si la tarea es **compleja** (múltiples tradeoffs, caminos no obvios) → **North** usa `sequential_thinking` para razonar primero
-4. **North** planifica con `econative-plan-and-decompose`
-5. **North** decide paralelismo y asigna **Executor(s)** con `task()`
-6. **Executor** ejecuta aplicando skills correspondientes
-7. North decide si invocar al **Auditor** según las reglas de cuándo llamarlo (ver tabla abajo)
-8. **North** decide qué persistir
-9. **task-closeout** marca la tarea como completada
+3. **North** usa `sequential_thinking` si el problema es complejo
+4. **North** ejecuta **`econative_plan({action: "design", intention, phases, tasks})`** para estructurar el plan
+5. **North** decide paralelismo entre tareas y asigna **Executor(s)** con `task()`
+6. **Por cada tarea:** `econative_plan start` → `task(Executor)` → `econative_plan close`
+7. **North** decide si invocar al **Auditor** según las reglas de la tabla abajo
+8. **North** decide qué persistir (discoveries, stack)
+9. **North** ejecuta **`econative_plan({action: "archive"})`** al completar el plan
 
 ## ⚖️ ¿Cuándo llamar al Auditor?
 
