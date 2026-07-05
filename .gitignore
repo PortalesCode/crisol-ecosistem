@@ -6,9 +6,10 @@
 node_modules/
 .opencode/node_modules/
 
-# Memoria transitoria (preferencias de usuario, snapshots de stack)
-workspec/Memoria/preferences-user/
-workspec/Memoria/stack/
+# workspec/ entero — los plugins crean todo sobre la marcha
+# ⚠️ Si usás Crisol-Eco como template para tu proyecto,
+#    comentá o quitá esta línea para trackear tu workspec/.
+workspec/
 
 # OS
 .DS_Store
@@ -24,14 +25,6 @@ __pycache__/
 .env
 .venv/
 
-# Planes (los genera el plugin — solo trackeamos los .gitkeep)
-workspec/plans/active/*
-!workspec/plans/active/.gitkeep
-workspec/plans/old/*
-!workspec/plans/old/.gitkeep
-
-# Contexto y AGENTS.md desembarcados por start_session
-# ⚠️ Si usás Crisol-Eco como template para tu proyecto,
-#    comentá/quita estas líneas para trackear tu propio contexto.
-workspec/context/
+# AGENTS.md desembarcado por start_session
+# ⚠️ Comentá/quita si querés trackear tu propio AGENTS.md
 AGENTS.md
