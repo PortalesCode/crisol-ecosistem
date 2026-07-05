@@ -126,6 +126,16 @@ export default (async () => {
               } catch { /* si falla parseo, no se toca */ }
             }
           }
+
+          // 5. Desembarcar template de dominios si no existe
+          const domainTemplateDir = join(desembarcoDir, "domains");
+          if (!existsSync(join(domainsDir, "_template.md")) && existsSync(join(domainTemplateDir, "_template.md"))) {
+            try {
+              mkdirSync(domainsDir, { recursive: true });
+              const tmpl = readFileSync(join(domainTemplateDir, "_template.md"), "utf-8");
+              writeFileSync(join(domainsDir, "_template.md"), tmpl, "utf-8");
+            } catch { /* ignore */ }
+          }
           // ═══════════════════════════════════════════════════════
 
           const result: Record<string, unknown> = {
