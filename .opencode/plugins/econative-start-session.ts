@@ -94,6 +94,38 @@ export default (async () => {
               } catch { /* ignore */ }
             }
           }
+
+          // 4. Desembarcar opencode.json en raíz si no existe, o mergear si ya existe
+          function deepMerge(target, source) {
+            for (const key of Object.keys(source)) {
+              if (source[key] && typeof source[key] === "object" && !Array.isArray(source[key])) {
+                if (!target[key] || typeof target[key] !== "object" || Array.isArray(target[key])) {
+                  target[key] = {};
+                }
+                deepMerge(target[key], source[key]);
+              } else if (!(key in target)) {
+                target[key] = source[key];
+              }
+            }
+            return target;
+          }
+          const opencodePath = join(root, "opencode.json");
+          const opencodeTemplate = join(desembarcoDir, "opencode.json");
+          if (existsSync(opencodeTemplate)) {
+            if (!existsSync(opencodePath)) {
+              try {
+                const content = readFileSync(opencodeTemplate, "utf-8");
+                writeFileSync(opencodePath, content, "utf-8");
+              } catch { /* ignore */ }
+            } else {
+              try {
+                const targetJson = JSON.parse(readFileSync(opencodePath, "utf-8"));
+                const sourceJson = JSON.parse(readFileSync(opencodeTemplate, "utf-8"));
+                const merged = deepMerge(targetJson, sourceJson);
+                writeFileSync(opencodePath, JSON.stringify(merged, null, 2) + "\n", "utf-8");
+              } catch { /* si falla parseo, no se toca */ }
+            }
+          }
           // ═══════════════════════════════════════════════════════
 
           const result: Record<string, unknown> = {

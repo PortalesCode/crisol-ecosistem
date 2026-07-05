@@ -29,3 +29,6 @@ __pycache__/
 # ⚠️ Comentá/quita si querés trackear los tuyos propios
 /AGENTS.md
 /README.md
+
+# opencode.json desembarcado por start_session
+/opencode.json
