@@ -71,6 +71,29 @@ export default (async () => {
             }
           }
 
+
+          // 3. Desembarcar .gitignore si no existe, o mergear si ya existe
+          const gitignorePath = join(root, ".gitignore");
+          const gitignoreTemplate = join(desembarcoDir, "gitignore");
+          if (existsSync(gitignoreTemplate)) {
+            if (!existsSync(gitignorePath)) {
+              try {
+                const content = readFileSync(gitignoreTemplate, "utf-8");
+                writeFileSync(gitignorePath, content, "utf-8");
+              } catch { /* ignore */ }
+            } else {
+              try {
+                const existing = readFileSync(gitignorePath, "utf-8");
+                if (!existing.includes("CRISOL-ECO")) {
+                  const template = readFileSync(gitignoreTemplate, "utf-8");
+                  const merged = existing.trimEnd()
+                    + "\n\n# --- CRISOL-ECO — deployed by econative_start_session ---\n"
+                    + template;
+                  writeFileSync(gitignorePath, merged, "utf-8");
+                }
+              } catch { /* ignore */ }
+            }
+          }
           // ═══════════════════════════════════════════════════════
 
           const result: Record<string, unknown> = {
