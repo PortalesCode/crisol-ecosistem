@@ -1,3 +1,4 @@
-# Crisol-Eco — dependencias y generados
 node_modules/
 workspec/
+package.json
+package-lock.json
