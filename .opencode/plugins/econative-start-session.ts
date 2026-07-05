@@ -13,16 +13,65 @@ export default (async () => {
           "INICIO OBLIGATORIO DE SESIÓN. North DEBE llamar esta tool al comenzar cada conversación. "
           + "Lee contexto, plan activo, stack, memorias y preferencias del ecosistema. "
           + "Si no hay preferencias de usuario, devuelve onboarding_required: true. "
-          + "Crea workspec/plans/active/plan.md si no existe.",
+          + "Crea workspec/plans/active/plan.md si no existe. "
+          + "Desembarca contextos y AGENTS.md desde .opencode/desembarco/ si es primera vez.",
         args: {},
         async execute(_args, context) {
-          const eco = join(context.directory, "workspec");
-          const ctxDir = join(context.directory, "workspec/context");
+          const root = context.directory;
+          const eco = join(root, "workspec");
+          const ctxDir = join(root, "workspec/context");
           const memDir = join(eco, "Memoria");
-          const domainsDir = join(context.directory, "workspec", "domains");
+          const domainsDir = join(root, "workspec", "domains");
 
           const prefsFile = join(memDir, "preferences-user", "config.json");
           const discoveriesDir = join(memDir, "discoveries");
+
+          // ═══════════════════════════════════════════════════════
+          //  DESEMBARCO — primer inicio en un proyecto
+          // ═══════════════════════════════════════════════════════
+          const desembarcoDir = join(root, ".opencode", "desembarco");
+
+          // 1. Desembarcar workspec/context/ si no existe
+          const ctxTemplateDir = join(desembarcoDir, "context");
+          if (!existsSync(ctxDir) && existsSync(ctxTemplateDir)) {
+            try {
+              mkdirSync(ctxDir, { recursive: true });
+              const files = readdirSync(ctxTemplateDir)
+                .filter((f) => extname(f).toLowerCase() === ".md");
+              for (const file of files) {
+                const content = readFileSync(join(ctxTemplateDir, file), "utf-8");
+                writeFileSync(join(ctxDir, file), content, "utf-8");
+              }
+            } catch { /* si falla, se ignora — se usará lo que haya */ }
+          }
+
+          // 2. Desembarcar AGENTS.md en raíz si no existe, o mergear si ya existe
+          const agentsPath = join(root, "AGENTS.md");
+          const agentsTemplate = join(desembarcoDir, "AGENTS.md");
+          if (existsSync(agentsTemplate)) {
+            if (!existsSync(agentsPath)) {
+              // No existe → copiar completo
+              try {
+                const content = readFileSync(agentsTemplate, "utf-8");
+                writeFileSync(agentsPath, content, "utf-8");
+              } catch { /* ignore */ }
+            } else {
+              // Existe → mergear solo si no tiene el marker de Crisol-Eco
+              try {
+                const existing = readFileSync(agentsPath, "utf-8");
+                if (!existing.includes("CRISOL-ECO")) {
+                  const template = readFileSync(agentsTemplate, "utf-8");
+                  const merged = existing.trimEnd()
+                    + "\n\n---\n"
+                    + "<!-- CRISOL-ECO — deployed by econative_start_session. Do not edit below this line. -->\n\n"
+                    + template;
+                  writeFileSync(agentsPath, merged, "utf-8");
+                }
+              } catch { /* ignore */ }
+            }
+          }
+
+          // ═══════════════════════════════════════════════════════
 
           const result: Record<string, unknown> = {
             session_started: new Date().toISOString(),
@@ -49,7 +98,7 @@ export default (async () => {
           }
 
           // ---- Auto-create plan.md if it doesn't exist ----
-          const planPath = join(context.directory, "workspec", "plans", "active", "plan.md");
+          const planPath = join(root, "workspec", "plans", "active", "plan.md");
           if (!existsSync(planPath)) {
             const planDir = dirname(planPath);
             if (!existsSync(planDir)) mkdirSync(planDir, { recursive: true });
@@ -104,13 +153,15 @@ export default (async () => {
 
           // ---- Load context/*.md ----
           if (existsSync(ctxDir)) {
-            const ctxFiles: Record<string, string> = {};
-            const files = readdirSync(ctxDir).filter((f) => extname(f) === ".md");
-            for (const file of files) {
-              const content = readFileSync(join(ctxDir, file), "utf-8");
-              ctxFiles[basename(file, ".md")] = content.slice(0, 3000);
-            }
-            result.context = ctxFiles;
+            try {
+              const ctxFiles: Record<string, string> = {};
+              const files = readdirSync(ctxDir).filter((f) => extname(f) === ".md");
+              for (const file of files) {
+                const content = readFileSync(join(ctxDir, file), "utf-8");
+                ctxFiles[basename(file, ".md")] = content.slice(0, 3000);
+              }
+              result.context = ctxFiles;
+            } catch { /* ignore */ }
           }
 
           // ---- Index domains (titles + descriptions) ----
@@ -130,7 +181,7 @@ export default (async () => {
 
           // ---- Scan stack ----
           try {
-            const entries = scanStack(context.directory);
+            const entries = scanStack(root);
             const snapshot = {
               schema: "econative-stack-v2",
               timestamp: new Date().toISOString(),

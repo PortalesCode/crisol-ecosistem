@@ -29,3 +29,9 @@ workspec/plans/active/*
 !workspec/plans/active/.gitkeep
 workspec/plans/old/*
 !workspec/plans/old/.gitkeep
+
+# Contexto y AGENTS.md desembarcados por start_session
+# ⚠️ Si usás Crisol-Eco como template para tu proyecto,
+#    comentá/quita estas líneas para trackear tu propio contexto.
+workspec/context/
+AGENTS.md
