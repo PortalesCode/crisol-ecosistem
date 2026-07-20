@@ -32,6 +32,11 @@ econative_domain_list — Listar dominios de conocimiento
 econative_domain_reader — Leer dominio completo
 econative_domain_write — Crear o actualizar dominio
 
+## 📋 Protocolos (se cargan bajo demanda — solo el registry en start_session)
+econative_protocol_list — Listar protocolos disponibles (solo título + descripción)
+econative_protocol_read — Leer protocolo COMPLETO por ID — cargar solo al activar
+econative_protocol_write — Crear o actualizar protocolo en formato estandarizado
+
 ## ⚡ Skills Nativas (cargar con skill("..."))
 
 econative-architecture-review — Evaluar arquitectura, impacto, riesgos

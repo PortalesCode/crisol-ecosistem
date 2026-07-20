@@ -22,6 +22,7 @@ export default (async () => {
           const ctxDir = join(root, "workspec/context");
           const memDir = join(eco, "Memoria");
           const domainsDir = join(root, "workspec", "domains");
+          const protocolsDir = join(root, "workspec", "protocols");
 
           const prefsFile = join(memDir, "preferences-user", "config.json");
           const discoveriesDir = join(memDir, "discoveries");
@@ -136,6 +137,30 @@ export default (async () => {
               writeFileSync(join(domainsDir, "_template.md"), tmpl, "utf-8");
             } catch { /* ignore */ }
           }
+
+          // 6. Desembarcar protocols/ si no existe
+          const protocolsDesembarcoDir = join(desembarcoDir, "protocols");
+          if (!existsSync(protocolsDir) && existsSync(protocolsDesembarcoDir)) {
+            try {
+              mkdirSync(protocolsDir, { recursive: true });
+              const files = readdirSync(protocolsDesembarcoDir)
+                .filter((f) => extname(f).toLowerCase() === ".md");
+              for (const file of files) {
+                const content = readFileSync(join(protocolsDesembarcoDir, file), "utf-8");
+                writeFileSync(join(protocolsDir, file), content, "utf-8");
+              }
+            } catch { /* si falla, se ignora */ }
+          }
+
+          // 7. Desembarcar CONTANTS.md si no existe
+          const contantsPath = join(root, "workspec", "CONTANTS.md");
+          const contantsDesembarco = join(desembarcoDir, "CONTANTS.md");
+          if (!existsSync(contantsPath) && existsSync(contantsDesembarco)) {
+            try {
+              const content = readFileSync(contantsDesembarco, "utf-8");
+              writeFileSync(contantsPath, content, "utf-8");
+            } catch { /* si falla, se ignora */ }
+          }
           // ═══════════════════════════════════════════════════════
 
           const result: Record<string, unknown> = {
@@ -149,6 +174,7 @@ export default (async () => {
             recent_discoveries: [] as string[],
             plan_created: false,
             plan: null as Record<string, unknown> | null,
+            contants: null as string | null,
           };
 
           // ---- Check preferences ----
@@ -286,6 +312,14 @@ export default (async () => {
               const content = readFileSync(join(discoveriesDir, f), "utf-8");
               return `## ${basename(f, ".md")}\n${content.slice(0, 500)}`;
             });
+          }
+
+          // ---- CONTANTS.md — contenido completo como texto plano ----
+          if (existsSync(contantsPath)) {
+            try {
+              const raw = readFileSync(contantsPath, "utf-8");
+              result.contants = raw; // contenido completo, sin formato
+            } catch { /* ignore */ }
           }
 
           return JSON.stringify(result, null, 2);

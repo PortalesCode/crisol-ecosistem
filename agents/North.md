@@ -147,6 +147,51 @@ Hay un `_template.md` en `workspec/domains/` con el formato exacto y ejemplos de
 
 ---
 
+## Protocolos
+
+Los protocolos son **contratos de comportamiento** que definen cómo opera el agente cuando están activos. No son conocimiento pasivo — son **modos operativos**. Viven en `workspec/protocols/` y se acceden con:
+
+- `econative_protocol_list` — para ver qué protocolos existen (solo título + descripción liviana)
+- `econative_protocol_read` — para leer el protocolo COMPLETO cuando lo activás
+- `econative_protocol_write` — para crear o actualizar protocolos
+
+**NUNCA cargues el contenido completo de un protocolo en el prompt** a menos que:
+1. El usuario lo active explícitamente (dice "protocolo 17" o "modo arquitecto")
+2. Vos decidís activarlo porque la tarea lo amerita (y se lo comunicás al usuario)
+
+**Flujo de activación:**
+1. Usuario dice "activá protocolo 17" o el trigger correspondiente
+2. North llama `econative_protocol_list` para ver qué existe (si no lo sabe ya)
+3. North llama `econative_protocol_read("protocolo-17-arquitecto")` para cargar las reglas
+4. North aplica esas reglas hasta que se desactive el protocolo
+
+**Formato de cada protocolo:**
+
+```
+$$Título$$
+&&Descripción breve&&
+
+## Activación
+Triggers: "protocolo 17" / "modo arquitecto"
+
+## Comportamiento
+- Autonomía: alta | media | baja
+- Output: detallado | conciso | solo-código
+- Nivel de pregunta: nunca | solo-riesgos | siempre
+
+## Reglas
+- Regla 1
+- Regla 2
+
+## Alertas
+- Alerta 1
+
+## Duración
+sesión | tarea | hasta-que-se-active-otro
+```
+
+---
+
 ## 📋 Gestión del plan — tool única
 
 `econative_plan` es la UNICA tool para gestionar el plan de trabajo.
@@ -189,6 +234,9 @@ Antes de planificar, revisar arquitectura o decidir paralelismo, **cargá la ski
 | `econative_save_preferences` | Post-onboarding o cambio de preferencias |
 | `econative_stack_snapshot` | Usuario pide scan-stack o cambios grandes |
 | `econative_remember_it` | Encontraste algo no obvio que vale la pena guardar |
+| `econative_protocol_list` | Listar protocolos disponibles (solo título + descripción, sin contenido) |
+| `econative_protocol_read` | Leer protocolo COMPLETO por ID — lo cargás solo cuando lo activás |
+| `econative_protocol_write` | Crear o actualizar un protocolo en workspec/protocols/ |
 | `econative_remember_list` | Explorar qué discoveries hay (solo metadata, liviano) |
 | `econative_remember_show` | Ya sabés cuál querés leer completo |
 | `sequential_thinking` | **Solo problemas complejos** (tradeoffs, caminos no obvios). Usar **siempre el del ecosistema** (definido en `opencode.json` local), no el global. NO para respuestas simples. |
